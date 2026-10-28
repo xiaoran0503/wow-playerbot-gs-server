@@ -137,3 +137,21 @@ e2e/go.work.sum
 
 .cache
 compile_commands.json
+
+# ==================
+#  VENDORED MODULES (this repo — commit module trees into git)
+# ==================
+!modules/mod-ale/
+!modules/mod-ah-bot/
+!modules/mod-transmog/
+!modules/mod-random-enchants/
+!modules/mod-boss-announcer/
+
+# ==================
+#  LOCAL / BUILD / RUNTIME IGNORES (this repo)
+# ==================
+docker/.env
+docker/.data/
+.wow-build-tmp/
+temp/
+*.log
