@@ -1,0 +1,43 @@
+WOW Playerbot Server — 第三方组件与素材归属声明 (NOTICE)
+================================================================================
+
+本仓库在 AzerothCore (TrinityCore 衍生) + mod-playerbots 分支基础上，整合了
+谷神整合服 (GS_Server) 的汉化配置、Lua 脚本与数据库中文素材。除仓库根 LICENSE
+外，以下第三方组件/素材需单独声明：
+
+--------------------------------------------------------------------------------
+1. StackTracePlus (custom/lua_scripts/extensions/StackTracePlus/)
+--------------------------------------------------------------------------------
+Copyright (c) 2010 Ignacio Burgueño
+License: MIT License
+Upstream: https://github.com/ignacio/StackTracePlus
+用途: 增强 Lua 错误堆栈（显示局部变量），作为 debug.traceback 替代供 Eluna 预加载。
+许可原文见 custom/lua_scripts/extensions/StackTracePlus/LICENSE。
+
+--------------------------------------------------------------------------------
+2. Eluna Lua Engine 扩展 (custom/lua_scripts/extensions/_Misc.ext, ObjectVariables.ext)
+--------------------------------------------------------------------------------
+随 Eluna Lua Engine (mod-ale 模块) 分发，GPLv3。
+用途: math.randomseed / require 引导、Map/Player/Creature/GameObject 运行期会话
+数据存储。与 mod-ale 模块同许可体系。
+
+--------------------------------------------------------------------------------
+3. 谷神整合 Lua 散件 (custom/lua_scripts/SupMalachite.lua, 掉落物品随机附魔.lua)
+--------------------------------------------------------------------------------
+来源: 本地 GS_Server 资产（网络收集整合版），无独立上游仓库。
+用途: 超级炉石传送石 (绑定物品 entry 6948)、掉落物品随机附魔。
+说明: 随本仓库自行维护；原始压缩包与中文须知归档于 docs/gushen-reference/。
+      谷神自带提示：脚本收集于网络、大多未测试；无效/报错/致服崩应删除对应脚本。
+
+--------------------------------------------------------------------------------
+4. 谷神汉化配置与参考文档 (docs/gushen-reference/, custom/conf-seed/)
+--------------------------------------------------------------------------------
+来源: GS_Server 服务端配置文件汉化版（worldserver.conf / authserver.conf /
+模块 conf.dist）。仅作参考与迁移基线；GBK 原件已转码为 UTF-8 无 BOM 并在文件
+清单注明原始编码。许可随原服务端（AzerothCore/mod-playerbots 体系）。
+
+--------------------------------------------------------------------------------
+5. 数据库中文素材 (sql/localization/, 阶段 B 产物)
+--------------------------------------------------------------------------------
+来源: GS_Server 数据库导出的玩家机器人名字池/公会名/竞技场队名/说话文本/
+自定义策略等中文数据。详见 docs/LOCALIZATION.md。

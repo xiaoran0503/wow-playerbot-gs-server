@@ -1,0 +1,95 @@
+name: build-push
+
+# 触发矩阵：
+#   push main          —— 推送到主干自动编译（本机不编译，一切在 GitHub Actions 完成）
+#   workflow_dispatch  —— 手动触发（仓库 Actions 页面点 "Run workflow"）
+#   schedule           —— 每日 02:00 UTC 定时重建（北京时间 10:00），cron 为 5 段
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * *"
+
+# 镜像命名前缀 = Docker Hub 命名空间，取自仓库 Secret DOCKERHUB_USERNAME
+# 最终镜像：docker.io/<你的DockerHub用户名>/wow-<authserver|worldserver|db-import>
+# 需要在仓库 Settings → Secrets and variables → Actions 配置两个 Secret：
+#   DOCKERHUB_USERNAME  —— Docker Hub 用户名
+#   DOCKERHUB_TOKEN     —— Docker Hub 访问令牌（Access Token，不是登录密码）
+env:
+  IMAGE_BASE: docker.io/${{ secrets.DOCKERHUB_USERNAME }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      # 必须 fetch-depth: 0（完整历史）：docker/Dockerfile 内 genrev 要从 git
+      # 提交历史生成编译版本信息，浅克隆会导致 genrev 报错或版本号为空。
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Docker Buildx：支持多阶段构建、缓存导出、--push 直推仓库
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 登录 Docker Hub；凭据来自上面两个 Secret
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 计算统一 tag：UTC日期-Git提交短sha8（YYYYMMDD-<sha8>），供后续步骤复用
+      - name: Compute tag
+        id: tag
+        shell: bash
+        run: |
+          echo "value=$(date -u +%Y%m%d)-${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
+
+      # 三目标多阶段构建：docker/Dockerfile 内
+      #   skeleton(基础层) → build(编译核心+modules/ 下 6 个 vendor 模块) → runtime(运行时)
+      #   → authserver / worldserver / db-import
+      # cache gha 双向：cache-from 读上次构建缓存，cache-to mode=max 写回 Actions 缓存，
+      # 大幅加速重复编译（模块很少全量重编）。
+      # 每个目标打两个 tag：本次日期-sha8 + latest。
+      - name: Build & push (authserver / worldserver / db-import)
+        shell: bash
+        run: |
+          set -euxo pipefail
+          TAG="${{ steps.tag.outputs.value }}"
+          for target in authserver worldserver db-import; do
+            docker buildx build \
+              --push \
+              --target "$target" \
+              -f docker/Dockerfile \
+              -t "$IMAGE_BASE/wow-$target:$TAG" \
+              -t "$IMAGE_BASE/wow-$target:latest" \
+              --cache-from type=gha \
+              --cache-to type=gha,mode=max \
+              .
+          done
+
+      # 审计用：把本次推送的镜像清单写成文件并上传为 artifact，
+      # 方便本机 wslc-mirror 部署时核对该拉哪个 tag。
+      - name: Write image manifest
+        shell: bash
+        run: |
+          {
+            echo "# built at $(date -u --iso-8601=seconds)"
+            echo "sha=${GITHUB_SHA}"
+            echo "tag=${{ steps.tag.outputs.value }}"
+            for target in authserver worldserver db-import; do
+              echo "${IMAGE_BASE}/wow-$target:${{ steps.tag.outputs.value }}"
+            done
+          } > image-manifest.txt
+
+      - name: Upload image manifest artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-manifest
+          path: image-manifest.txt

@@ -1,0 +1,78 @@
+name: sync-upstream
+
+# 触发矩阵：
+#   workflow_dispatch  —— 手动触发（仓库 Actions 页面点 "Run workflow"）
+#   schedule           —— 每日 03:00 UTC（北京时间 11:00），比 build.yml 晚 1 小时，
+#                          同步完成 push 回 main 后会再触发一次 build.yml
+# 作用：
+#   1) fetch 上游 mod-playerbots/azerothcore-wotlk 的 Playerbot 分支（depth-1）并软重置
+#   2) 刷新 modules/ 下 6 个 vendor 模块到各自上游最新（mod-playerbots 固定 master）
+#   3) 若 custom/conf-seed/gen-conf-seed.ps1 存在则重生成配置种子
+#   4) 收集变更 → 提交 → push 回 origin/main（直通模式，默认）
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"
+
+# 默认直通 push 回 main，需要 contents: write 权限
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      # checkout 出来的仓库 = 自有仓库，它的 remote 名是 origin
+      # fetch-depth: 0 保留完整历史，与本机 reset/genrev 行为一致
+      - name: Checkout (own repo = origin)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Actions 机器人身份提交
+      - name: Configure git identity
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # checkout 只带 origin；上游官方仓库需要补上 upstream remote
+      - name: Ensure upstream remote exists
+        shell: bash
+        run: |
+          git remote get-url upstream >/dev/null 2>&1 \
+            || git remote add upstream https://github.com/mod-playerbots/azerothcore-wotlk.git
+          git remote -v
+
+      # ubuntu-latest 自带 pwsh 7；调用与本机完全相同的 scripts/sync-upstream.ps1。
+      # -Push 开关：CI 环境直接提交并 push 到 origin/main（本机用法不带此开关，只提交不推）。
+      # checkout 默认已注入具有 push 权限的凭据，无需另配 Secret。
+      - name: Sync upstream + refresh modules + regen conf-seed
+        shell: pwsh
+        run: pwsh -NoProfile -File scripts/sync-upstream.ps1 -Push
+
+      # =====================================================================
+      # 模式 B（备选，默认注释掉）：不同直通 push，改为开 PR 人工审阅后合并。
+      # 启用方法：
+      #   1) 上面一步去掉 -Push（只本地提交不推）；
+      #   2) 把下面整段注释取消；
+      #   3) 仓库 Secrets 增加 GH_TOKEN：具备 contents + pull request 权限的 PAT；
+      #   4) 顶部 permissions 改为 pull-requests: write。
+      # ---------------------------------------------------------------------
+      # - name: Open PR when changes exist
+      #   shell: bash
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      #   run: |
+      #     set -euxo pipefail
+      #     git add -A
+      #     if git diff --cached --quiet; then
+      #       echo "无变更，不需要 PR"
+      #       exit 0
+      #     fi
+      #     BRANCH="sync/upstream-$(date -u +%Y%m%d)"
+      #     git checkout -b "$BRANCH"
+      #     git commit -m "chore: sync upstream Playerbot + refresh modules"
+      #     git push origin "$BRANCH"
+      #     gh pr create --title "chore: sync upstream Playerbot" --body "每日自动同步上游 Playerbot 分支与 6 个 vendor 模块"
+      # =====================================================================

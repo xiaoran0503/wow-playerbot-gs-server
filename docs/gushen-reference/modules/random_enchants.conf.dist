@@ -1,0 +1,71 @@
+
+#
+# 随机附魔选项
+#
+#     RandomEnchants.Enable
+#        启用或禁用该模块
+#        默认值：     1（启用）
+
+RandomEnchants.Enable = 1
+
+#
+#     RandomEnchants.AnnounceOnLogin
+#        在玩家登录时是否为该模块显示一条消息
+#        默认值：     1
+
+RandomEnchants.AnnounceOnLogin=0
+
+#
+#     RandomEnchants.OnLoginMessage
+#        登录时显示的消息（只有在 AnnounceOnLogin 启用时才适用）
+#        默认值：    “This server is running a RandomEnchants Module.”
+
+RandomEnchants.OnLoginMessage="This server is running a RandomEnchants Module."
+
+#
+#     RandomEnchants.OnLoot
+#        从掉落物品中获得物品时随机附魔的几率
+#        默认值：     1
+
+RandomEnchants.OnLoot=1
+
+#
+#     RandomEnchants.OnCreate
+#        通过专业技能制造物品时随机附魔的几率
+#        默认值：     1
+
+RandomEnchants.OnCreate=1
+
+#
+#     RandomEnchants.OnQuestReward
+#        从任务奖励中获得物品时随机附魔的几率
+#        默认值：     1
+
+RandomEnchants.OnQuestReward=1
+
+#
+#     RandomEnchants.OnGroupRoll 
+#        从团队分配中获得物品时随机附魔的几率
+#        默认值：     1
+
+RandomEnchants.OnGroupRoll = 1
+
+#     RandomEnchants.EnchantChance1
+#        第一个附魔被应用的概率（以百分比表示）。
+#        默认值：     70.0
+
+RandomEnchants.EnchantChance1=70.0
+
+#
+#     RandomEnchants.EnchantChance2
+#        第二个附魔被应用的概率（只有在第一个附魔被应用时才适用）。
+#        默认值：     65.0
+
+RandomEnchants.EnchantChance2=65.0
+
+#
+#     RandomEnchants.EnchantChance3
+#        第三个附魔被应用的概率（只有在第二个附魔被应用时才适用）。
+#        默认值：     60.0
+
+RandomEnchants.EnchantChance3=60.0

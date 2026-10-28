@@ -1,0 +1,114 @@
+# =============================================================================
+# Playerbot 分支私服栈 — MySQL 8.4 + auth/world + 可选门户
+# -----------------------------------------------------------------------------
+# 与官方 azerothcore docker-compose 对齐 (DB 即 mysql:8.4), 适配本仓库 6 模块栈:
+#   端口 20241(auth) / 20242(world), 数据库宿主机 3307, 门户 8081
+#
+# 服务分组 (compose profiles):
+#   (默认)         wow-db + wow-authserver + wow-worldserver  —— 迁移/日常运行
+#   fresh-install 额外起 db-import                           —— 一次性建库
+#       使用: docker compose --profile fresh-install run --rm db-import
+#   full          额外起 wow-portal                           —— 注册门户(默认不带)
+#       使用: docker compose --profile full up -d wow-portal
+#
+# 两条部署路径:
+#   迁移路径(已有数据): 先跑 scripts/migrate-mysql.ps1 导入 dump, 再直接 up -d,
+#       worldserver 启动时按 Updates.EnableDatabases=7/AutoSetup=1 自动追平补丁
+#   全新安装路径: --profile fresh-install run --rm db-import 建库, 再 up -d
+#
+# 数据目录: 客户端地图 (maps/vmaps/mmaps/dbc/Cameras) 通过 WOW_DATA_DIR 只读挂载,
+#   与官方 client-data 分离设计一致; 不要在镜像内打包地图
+# =============================================================================
+
+name: wow-playerbot
+
+x-server-common: &server-common
+  restart: unless-stopped
+  depends_on:
+    wow-db:
+      condition: service_healthy
+  environment: &server-env
+    AC_DISABLE_INTERACTIVE: "1"
+    # 数据库连接 (MySQL 8.4, TCP; 4 库 + playerbots 模块库)
+    AC_LOGIN_DATABASE_INFO: "wow-db;3306;${WOW_DB_USER:-wow_user};${WOW_DB_PASSWORD:?请在 .env 设置 WOW_DB_PASSWORD};acore_auth"
+    AC_WORLD_DATABASE_INFO: "wow-db;3306;${WOW_DB_USER:-wow_user};${WOW_DB_PASSWORD:?};acore_world"
+    AC_CHARACTER_DATABASE_INFO: "wow-db;3306;${WOW_DB_USER:-wow_user};${WOW_DB_PASSWORD:?};acore_characters"
+    AC_PLAYERBOTSDATABASEINFO: "wow-db;3306;${WOW_DB_USER:-wow_user};${WOW_DB_PASSWORD:?};acore_playerbots"
+    # 服务端口 (容器内)
+    AC_REALMSERVER_PORT: "20241"
+    AC_WORLDSERVER_PORT: "20242"
+    # 数据/日志目录 (容器内绝对路径)
+    AC_DATA_DIR: "/azerothcore/env/dist/data"
+    AC_LOGS_DIR: "/azerothcore/env/dist/logs"
+  volumes:
+    - wow-config:/azerothcore/env/dist/etc
+    - wow-logs:/azerothcore/env/dist/logs
+    # 客户端地图数据 (宿主机只读挂载, 不复制进镜像)
+    - ${WOW_DATA_DIR:-E:\缓存\WOW\GS_Server\datalyf}:/azerothcore/env/dist/data:ro
+
+services:
+  wow-db:
+    image: mysql:8.4
+    container_name: wow-mysql
+    restart: unless-stopped
+    ports:
+      - "${WOW_DB_HOST_PORT:-3307}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${WOW_DB_ROOT_PASSWORD:?请在 .env 设置 WOW_DB_ROOT_PASSWORD}
+    volumes:
+      - wow-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+
+  wow-authserver:
+    <<: *server-common
+    image: ${WOW_AUTHSERVER_IMAGE:?请在 .env 设置 WOW_AUTHSERVER_IMAGE (CI 推送地址)}
+    container_name: wow-authserver
+    ports:
+      - "${WOW_AUTH_PORT:-20241}:20241"
+
+  wow-worldserver:
+    <<: *server-common
+    image: ${WOW_WORLDSERVER_IMAGE:?请在 .env 设置 WOW_WORLDSERVER_IMAGE (CI 推送地址)}
+    container_name: wow-worldserver
+    ports:
+      - "${WOW_WORLD_PORT:-20242}:20242"
+
+  # 全新安装路径: 一次性建库容器 (迁移路径不需要)
+  db-import:
+    image: ${WOW_DBIMPORT_IMAGE:?请在 .env 设置 WOW_DBIMPORT_IMAGE (CI 推送地址)}
+    container_name: wow-db-import
+    profiles: ["fresh-install"]
+    depends_on:
+      wow-db:
+        condition: service_healthy
+    environment: *server-env
+
+  # 注册门户: 默认不启动 (profile=full, 需显式 --profile full 才起)
+  wow-portal:
+    image: ${PORTAL_IMAGE:-wow-portal:latest}
+    container_name: wow-portal
+    restart: unless-stopped
+    profiles: ["full"]
+    depends_on:
+      wow-db:
+        condition: service_healthy
+    environment:
+      WOW_DB_HOST: wow-db
+      WOW_DB_PORT: "3306"
+      WOW_DB_USER: ${WOW_DB_USER:-wow_user}
+      WOW_DB_PASSWORD: ${WOW_DB_PASSWORD:?}
+      WOW_SERVER_ADDR: ${WOW_SERVER_ADDR:-127.0.0.1}
+      WOW_AUTH_PORT: "20241"
+      WOW_REALM_NAME: ${WOW_REALM_NAME:-魔兽世界}
+      PORTAL_TITLE: ${PORTAL_TITLE:-魔兽世界}
+    ports:
+      - "${PORTAL_PORT:-8081}:80"
+
+volumes:
+  wow-mysql-data:
+  wow-config:
+  wow-logs:

@@ -1,0 +1,341 @@
+[worldserver]
+
+###############################################################################
+# 拍卖行机器人设置
+#
+#    AuctionHouseBot.DEBUG
+#        启用/禁用调试输出
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.DEBUG_CONFIG
+#        启用/禁用配置调试输出
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.DEBUG_FILTERS
+#        启用/禁用过滤器调试输出
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.DEBUG_BUYER
+#        启用/禁用买家调试输出
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.DEBUG_SELLER
+#        启用/禁用卖家调试输出
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.TRACE_SELLER
+#        启用/禁用已售物品追踪
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.TRACE_BUYER
+#        启用/禁用已购物品追踪
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.EnableSeller
+#        启用/禁用拍卖行机器人上架物品功能
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.EnableBuyer
+#        启用/禁用拍卖行机器人从玩家处购买物品功能
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.UseBuyPriceForSeller
+#        卖家在确定出价时使用购买价格还是销售价格
+#    默认值 0（使用销售价格）
+#
+#    AuctionHouseBot.UseBuyPriceForBuyer
+#        买家在确定出价时使用购买价格还是销售价格
+#    默认值 0（使用销售价格）
+#
+#    AuctionHouseBot.UseMarketPriceForSeller
+#        卖家是否使用市场价格进行拍卖
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.MarketResetThreshold
+#        当相同物品的拍卖数量达到此值时，采用固定价格。
+#        在达到此阈值之前，价格会根据启发式规则进行调整。
+#        设置较低的值可以使市场价格快速反应，设置较高的值可以平滑价格波动。
+#    默认值 25
+#
+#    拍卖行机器人的角色数据
+#        AuctionHouseBot.Account 是要在拍卖行机器人中使用的角色的账号编号
+#         （在 realmd->account 表中）。
+#        AuctionHouseBot.GUID 是要在拍卖行机器人中使用的角色的 GUID
+#         （在 characters->characters 表中）。
+#    默认值：0（禁用拍卖行机器人）
+#
+#    AuctionHouseBot.ItemsPerCycle
+#        在大规模操作期间每次操作添加/移除的物品数量
+#    默认值 200
+#
+#    AuctionHouseBot.ConsiderOnlyBotAuctions
+#        忽略玩家的拍卖，仅考虑机器人拍卖，当计算市场上的拍卖数量时。
+#        如果启用此选项，即使有许多玩家参与，机器人也可以在市场中保持一定的“背景噪音”。
+#        如果未启用此选项，玩家的拍卖将被计入有效拍卖数量，可能需要大幅增加 SQL 中的最大物品数量设置，
+#        以允许机器人在市场中正常运行。如果启用此选项，玩家的拍卖将不会被计入。
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.DuplicatesCount
+#        机器人在市场上出售的重复物品堆的最大数量。
+#        如果设置为零，则不设置限制。
+#    默认值 0
+#
+#    AuctionHouseBot.DivisibleStacks
+#        根据物品的最大堆叠数量，以不同的堆叠大小出售物品。
+#        例如，最大堆叠数量为 20 的物品将被分成 5、10、15 和 20 的堆叠出售，而不是随机堆叠。
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.ElapsingTimeClass
+#        出售物品的持续时间类别。有三种类别：
+#        0 = 长时间，拍卖持续时间为一到三天
+#        1 = 中等时间，拍卖持续时间在一天内
+#        2 = 短时间，拍卖持续时间在一小时内
+#    默认值 1
+#
+
+AuctionHouseBot.DEBUG = 0
+AuctionHouseBot.DEBUG_CONFIG = 0
+AuctionHouseBot.DEBUG_FILTERS = 0
+AuctionHouseBot.DEBUG_BUYER = 0
+AuctionHouseBot.DEBUG_SELLER = 0
+AuctionHouseBot.TRACE_SELLER = 0
+AuctionHouseBot.TRACE_BUYER = 0
+
+AuctionHouseBot.EnableSeller = 1
+AuctionHouseBot.EnableBuyer = 1
+AuctionHouseBot.UseBuyPriceForSeller = 0
+AuctionHouseBot.UseBuyPriceForBuyer = 0
+AuctionHouseBot.UseMarketPriceForSeller = 0
+AuctionHouseBot.MarketResetThreshold = 25
+AuctionHouseBot.Account = 174
+AuctionHouseBot.GUID = 1729
+AuctionHouseBot.ItemsPerCycle = 200
+AuctionHouseBot.ConsiderOnlyBotAuctions = 0
+AuctionHouseBot.DuplicatesCount = 0
+AuctionHouseBot.DivisibleStacks = 0
+AuctionHouseBot.ElapsingTimeClass = 1
+
+###############################################################################
+# 拍卖行机器人过滤器部分 1
+#
+#    AuctionHouseBot.VendorItems
+#        是否包含可以从商人处购买的物品。
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.VendorTradeGoods
+#        是否包含可以从商人处购买的交易物品。
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.LootItems
+#        是否包含可以从掉落或钓鱼中获得的物品。
+#    默认值 1（启用）
+#
+#    AuctionHouseBot.LootTradeGoods
+#        是否包含可以从掉落或钓鱼中获得的交易物品。
+#    默认值 1（启用）
+#
+#    AuctionHouseBot.OtherItems
+#        是否包含其他杂项物品。
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.OtherTradeGoods
+#        是否包含其他杂项交易物品。
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.ProfessionItems
+#        是否包含职业所需物品。
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.Bonding_types
+#        指定卖家可以拍卖的绑定类型
+#            无绑定
+#             默认值 1（启用）
+#            拾取绑定
+#             默认值 0（禁用）
+#            装备绑定
+#             默认值 1（启用）
+#            使用绑定
+#             默认值 1（启用）
+#            任务物品
+#             默认值 0（禁用）
+#
+#    AuctionHouseBot.DisablePermEnchant
+#        禁用具有永久附魔的物品
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.DisableConjured
+#        禁用幻化物品
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.DisableGems
+#        禁用宝石
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.DisableMoney
+#        禁用作为货币的物品
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.DisableMoneyLoot
+#        禁用掉落货币的物品
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.DisableLootable
+#        禁用掉落其他物品的物品
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.DisableKeys
+#        禁用钥匙类物品
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.DisableDuration
+#        禁用具有持续时间的物品
+#    默认值 0（禁用）
+#
+#    AuctionHouseBot.DisableBOP_Or_Quest_NoReqLevel
+#        禁用绑定或任务物品，且所需等级低于物品等级
+#        （这可以防止 10 级角色使用 60 级的武器或装备）
+#        （可能需要进一步细化）
+#    默认值 0（禁用）
+#
+
+AuctionHouseBot.VendorItems = 1
+AuctionHouseBot.VendorTradeGoods = 1
+AuctionHouseBot.LootItems = 1
+AuctionHouseBot.LootTradeGoods = 1
+AuctionHouseBot.OtherItems = 1
+AuctionHouseBot.OtherTradeGoods = 1
+AuctionHouseBot.ProfessionItems = 1
+AuctionHouseBot.No_Bind = 1
+AuctionHouseBot.Bind_When_Picked_Up = 0
+AuctionHouseBot.Bind_When_Equipped = 1
+AuctionHouseBot.Bind_When_Use = 1
+AuctionHouseBot.Bind_Quest_Item = 0
+AuctionHouseBot.DisablePermEnchant = 0
+AuctionHouseBot.DisableConjured = 0
+AuctionHouseBot.DisableGems = 0
+AuctionHouseBot.DisableMoney = 0
+AuctionHouseBot.DisableMoneyLoot = 0
+AuctionHouseBot.DisableLootable = 0
+AuctionHouseBot.DisableKeys = 0
+AuctionHouseBot.DisableDuration = 0
+AuctionHouseBot.DisableBOP_Or_Quest_NoReqLevel = 1
+
+###############################################################################
+# 拍卖行机器人过滤器部分 2
+#
+#     这些过滤器是布尔值（0 或 1），用于禁用特定职业的物品。
+#     （未使用的职业是职业 10，出于某种原因被跳过）
+#     默认值 0（允许）
+#
+
+AuctionHouseBot.DisableWarriorItems = 0
+AuctionHouseBot.DisablePaladinItems = 0
+AuctionHouseBot.DisableHunterItems = 0
+AuctionHouseBot.DisableRogueItems = 0
+AuctionHouseBot.DisablePriestItems = 0
+AuctionHouseBot.DisableDKItems = 0
+AuctionHouseBot.DisableShamanItems = 0
+AuctionHouseBot.DisableMageItems = 0
+AuctionHouseBot.DisableWarlockItems = 0
+AuctionHouseBot.DisableUnusedClassItems = 0
+AuctionHouseBot.DisableDruidItems = 0
+
+###############################################################################
+# 拍卖行机器人过滤器部分 3
+#
+#    AuctionHouseBot.DisabledItems
+#        禁止卖家上架特定物品
+#        （不再使用，参见表 “mod_auctionhousebot_disabled_items”）
+#
+#    AuctionHouseBot.DisableItemsBelowLevel
+#        禁止卖家上架低于此等级的物品
+#    默认值 0（关闭）
+#
+#    AuctionHouseBot.DisableItemsAboveLevel
+#        禁止卖家上架高于此等级的物品
+#    默认值 0（关闭）
+#
+#    AuctionHouseBot.DisableTGsBelowLevel
+#        禁止卖家上架低于此等级的交易物品
+#    默认值 0（关闭）
+#
+#    AuctionHouseBot.DisableTGsAboveLevel
+#        禁止卖家上架高于此等级的交易物品
+#    默认值 0（关闭）
+#
+#    AuctionHouseBot.DisableItemsBelowGUID
+#        禁止卖家上架低于此 GUID 的物品
+#    默认值 0（关闭）
+#
+#    AuctionHouseBot.DisableItemsAboveGUID
+#        禁止卖家上架高于此 GUID 的物品
+#    默认值 0（关闭）
+#
+#    AuctionHouseBot.DisableTGsBelowGUID
+#        禁止卖家上架低于此 GUID 的交易物品
+#    默认值 0（关闭）
+#
+#    AuctionHouseBot.DisableTGsAboveGUID
+#        禁止卖家上架高于此 GUID 的交易物品
+#    默认值 0（关闭）
+#
+#    AuctionHouseBot.DisableItemsBelowReqLevel
+#        禁止卖家上架所需等级低于此值的物品
+#    默认值 0（关闭）
+#
+#    AuctionHouseBot.DisableItemsAboveReqLevel
+#        禁止卖家上架所需等级高于此值的物品
+#    默认值 0（关闭）
+#
+#    AuctionHouseBot.DisableTGsBelowReqLevel
+#        禁止卖家上架所需等级低于此值的交易物品
+#    默认值 0（关闭）
+#
+#    AuctionHouseBot.DisableTGsAboveReqLevel
+#        禁止卖家上架所需等级高于此值的交易物品
+#    默认值 0（关闭）
+#
+#    AuctionHouseBot.DisableItemsBelowReqSkillRank
+#        禁止卖家上架所需技能等级低于此值的物品
+#    默认值 0（关闭）
+#
+#    AuctionHouseBot.DisableItemsAboveReqSkillRank
+#        禁止卖家上架所需技能等级高于此值的物品
+#    默认值 0（关闭）
+#
+#    AuctionHouseBot.DisableTGsBelowReqSkillRank
+#        禁止卖家上架所需技能等级低于此值的交易物品
+#    默认值 0（关闭）
+#
+#    AuctionHouseBot.DisableTGsAboveReqSkillRank
+#        禁止卖家上架所需技能等级高于此值的交易物品
+#    默认值 0（关闭）
+#
+
+AuctionHouseBot.DisableItemsBelowLevel = 0
+AuctionHouseBot.DisableItemsAboveLevel = 0
+AuctionHouseBot.DisableTGsBelowLevel = 0
+AuctionHouseBot.DisableTGsAboveLevel = 0
+AuctionHouseBot.DisableItemsBelowGUID = 0
+AuctionHouseBot.DisableItemsAboveGUID = 0
+AuctionHouseBot.DisableTGsBelowGUID = 0
+AuctionHouseBot.DisableTGsAboveGUID = 0
+AuctionHouseBot.DisableItemsBelowReqLevel = 0
+AuctionHouseBot.DisableItemsAboveReqLevel = 0
+AuctionHouseBot.DisableTGsBelowReqLevel = 0
+AuctionHouseBot.DisableTGsAboveReqLevel = 0
+AuctionHouseBot.DisableItemsBelowReqSkillRank = 0
+AuctionHouseBot.DisableItemsAboveReqSkillRank = 0
+AuctionHouseBot.DisableTGsBelowReqSkillRank = 0
+AuctionHouseBot.DisableTGsAboveReqSkillRank = 0
+
+###############################################################################
+# 拍卖行机器人过滤器部分 4
+#
+#    AuctionHouseBot.SellerWhiteList
+#        绕过禁用物品表的设置，仅允许上架选定的物品
+#        此处的值应为物品模板 ID，用逗号分隔（例如 “1, 2, 3”）
+#    默认值 “”（空）
+#
+
+AuctionHouseBot.SellerWhiteList = ""

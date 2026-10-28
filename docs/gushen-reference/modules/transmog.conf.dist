@@ -1,0 +1,331 @@
+[worldserver]
+
+###################################################################################################
+#    幻化配置
+###################################################################################################
+#
+#    设置
+#
+#    Transmogrification.Enable
+#        描述：启用或禁用幻化功能。
+#              禁用时，玩家将无法看到任何幻化物品，但数据库数据保持完整。
+#        默认值：1
+#
+#    Transmogrification.UseCollectionSystem
+#        描述：启用或禁用军团再临风格的外观收集系统。
+#              启用后，玩家可以使用已装备或完成任务奖励的物品外观。
+#              禁用后，玩家必须在背包中有物品才能作为幻化外观来源。
+#        默认值：1
+#
+#    Transmogrification.UseVendorInterface
+#        描述：启用或禁用使用虚拟商人界面进行物品选择。
+#              启用后，玩家可以从商人菜单中选择物品，并支持 Ctrl+ 点击预览。
+#              禁用后，玩家将使用对话菜单选择物品，无法预览。
+#        默认值：0
+#
+#    Transmogrification.AllowHiddenTransmog
+#        描述：启用或禁用通过幻化隐藏装备。
+#              启用后，玩家可以在幻化商人处选择“隐形”外观。
+#        默认值：1
+#
+#    Transmogrification.HiddenTransmogIsFree
+#        描述：启用或禁用通过幻化系统免费隐藏物品。
+#              启用后，玩家可以免费隐藏装备。
+#              禁用后，玩家需要支付标准幻化费用（受所有修饰符影响）来隐藏物品。
+#        默认值：1
+#
+#    Transmogrification.TrackUnusableItems
+#        描述：如果启用，即使物品不适合幻化，也会收集其外观。
+#              这允许在更改配置后使用这些外观。
+#        默认值：1
+#
+#    Transmogrification.RetroActiveAppearances
+#        描述：启用或禁用检查所有已完成任务以收集未收集的外观。
+#              每个玩家仅执行一次。
+#        默认值：1
+#
+#    Transmogrification.ResetRetroActiveAppearancesFlag
+#        描述：重置标志，表明是否已执行过回溯外观检查。
+#              每个角色登录时执行。
+#        默认值：0
+#
+#    Transmogrification.EnableTransmogInfo
+#        描述：启用或禁用幻化信息按钮。
+#        默认值：1
+#
+#    Transmogrification.TransmogNpcText
+#        描述：幻化信息菜单的 NPC 文本条目。
+#        默认值：601083
+#
+#    Transmogrification.Allowed
+#        描述：允许幻化的物品列表（跳过品质和 CanUseItem 检查）。
+#              示例："25 35674 5623"
+#        默认值：""
+#
+#    Transmogrification.NotAllowed
+#        描述：禁止幻化的物品列表。
+#              示例："25 35674 5623"
+#        默认值：""
+#
+#    Transmogrification.EnablePortable
+#        描述：启用或禁用便携式幻化 NPC。
+#        默认值：1
+#
+#    Transmogrification.EnableSortByQualityAndName
+#        描述：启用或禁用按品质和名称排序物品。
+#        默认值：1
+#
+
+Transmogrification.Enable = 1
+Transmogrification.UseCollectionSystem = 1
+Transmogrification.UseVendorInterface = 1
+Transmogrification.AllowHiddenTransmog = 1
+Transmogrification.HiddenTransmogIsFree = 1
+Transmogrification.TrackUnusableItems = 1
+Transmogrification.RetroActiveAppearances = 1
+Transmogrification.ResetRetroActiveAppearancesFlag = 0
+
+Transmogrification.EnableTransmogInfo = 1
+Transmogrification.TransmogNpcText = 601083
+
+Transmogrification.Allowed = ""
+Transmogrification.NotAllowed = ""
+
+Transmogrification.EnablePortable = 1
+
+Transmogrification.EnableSortByQualityAndName = 1
+
+#
+#    铜币费用
+#
+#    Transmogrification.ScaledCostModifier
+#        描述：默认金币费用的乘数（设置为 0 以禁用默认费用）。
+#        默认值：1.0
+#
+#    Transmogrification.CopperCost
+#        描述：附加在其他费用之上的成本（可以为负值）。
+#        默认值：0
+#
+#    要设置自定义金币费用，请将 ScaledCostModifier 设置为 0.0，并将 CopperCost 设置为您想要的费用。
+
+Transmogrification.ScaledCostModifier = 0
+Transmogrification.CopperCost = 0
+
+#
+#    代币费用
+#
+#    Transmogrification.RequireToken
+#        描述：添加或禁用代币费用。
+#        默认值：0
+#
+#    Transmogrification.TokenEntry
+#        描述：代币物品的条目。
+#        默认值：49426
+#
+#    Transmogrification.TokenAmount
+#        描述：所需代币数量。
+#        默认值：1
+
+Transmogrification.RequireToken = 0
+Transmogrification.TokenEntry = 49426
+Transmogrification.TokenAmount = 0
+
+#
+#    要求
+#
+#    Transmogrification.AllowPoor
+#        描述：允许灰色品质物品作为源和目标物品。
+#        默认值：0
+#
+#    Transmogrification.AllowCommon
+#        描述：允许白色品质物品作为源和目标物品。
+#        默认值：0
+#
+#    Transmogrification.AllowUncommon
+#        描述：允许绿色品质物品作为源和目标物品。
+#        默认值：1
+#
+#    Transmogrification.AllowRare
+#        描述：允许蓝色品质物品作为源和目标物品。
+#        默认值：1
+#
+#    Transmogrification.AllowEpic
+#        描述：允许紫色品质物品作为源和目标物品。
+#        默认值：1
+#
+#    Transmogrification.AllowLegendary
+#        描述：允许橙色品质物品作为源和目标物品。
+#        默认值：0
+#
+#    Transmogrification.AllowArtifact
+#        描述：允许神器品质物品作为源和目标物品。
+#        默认值：0
+#
+#    Transmogrification.AllowHeirloom
+#        描述：允许传家宝物品作为源和目标物品。
+#        默认值：1
+#
+#    Transmogrification.AllowTradeable
+#        描述：允许可交易物品（例如，在副本中 2 小时宽限期内的物品）。
+#        默认值：0
+#
+#    Transmogrification.AllowMixedArmorTypes
+#        描述：允许布甲物品与板甲等进行幻化。
+#        默认值：0
+#
+#    Transmogrification.AllowLowerTiers
+#        描述：允许使用玩家可以装备的任何护甲等级（例如，战士板甲 -> 布甲 | 法师布甲）。
+#        默认值：0
+#
+#    Transmogrification.AllowMixedOffhandArmorTypes
+#        描述：允许盾牌、副手（例如，灯具）和小盾牌互换使用。
+#        默认值：0
+#
+#    Transmogrification.AllowMixedWeaponTypes
+#        描述：允许斧头与匕首等进行幻化。
+#        可选值：
+#            默认值：0 - 严格 - 完全限制，如同原版魔兽世界 4.3 幻化 - 武器必须是相同类型（例外：枪械、弩或弓）。
+#                    1 - 现代 - 如同后续零售版魔兽世界，允许剑幻化为斧头等。
+#                    2 - 完全 - 无限制，允许任何武器幻化为其他任何武器。
+#
+#    Transmogrification.AllowMixedWeaponHandedness
+#        描述：通常主手和副手武器只能幻化为同类型。启用以移除此限制。
+#              当 AllowMixedWeaponTypes 设置为完全时，此设置不必要。
+#        默认值：0
+#
+#    Transmogrification.AllowFishingPoles
+#        描述：允许鱼竿进行幻化。
+#        默认值：0
+#
+#    Transmogrification.IgnoreReqRace
+#        描述：忽略源物品所需种族要求。
+#        默认值：0
+#
+#    Transmogrification.IgnoreReqClass
+#        描述：忽略源物品所需职业要求。
+#        默认值：0
+#
+#    Transmogrification.IgnoreReqSkill
+#        描述：忽略源物品所需技能要求。
+#        默认值：0
+#
+#    Transmogrification.IgnoreReqSpell
+#        描述：忽略源物品所需法术要求。
+#        默认值：0
+#
+#    Transmogrification.IgnoreReqLevel
+#        描述：忽略源物品所需等级要求。
+#        默认值：0
+#
+#    Transmogrification.IgnoreReqEvent
+#        描述：忽略源物品所需事件要求。
+#        默认值：0
+#
+#    Transmogrification.IgnoreReqStats
+#        描述：忽略源物品统计值大于 0 的要求。
+#        默认值：0
+
+
+Transmogrification.AllowPoor = 0
+Transmogrification.AllowCommon = 0
+Transmogrification.AllowUncommon = 1
+Transmogrification.AllowRare = 1
+Transmogrification.AllowEpic = 1
+Transmogrification.AllowLegendary = 0
+Transmogrification.AllowArtifact = 0
+Transmogrification.AllowHeirloom = 1
+Transmogrification.AllowTradeable = 0
+
+Transmogrification.AllowMixedArmorTypes = 0
+Transmogrification.AllowLowerTiers = 0
+Transmogrification.AllowMixedOffhandArmorTypes = 0
+Transmogrification.AllowMixedWeaponTypes = 0
+Transmogrification.AllowMixedWeaponHandedness = 0
+Transmogrification.AllowFishingPoles = 0
+
+Transmogrification.IgnoreReqRace = 0
+Transmogrification.IgnoreReqClass = 0
+Transmogrification.IgnoreReqSkill = 0
+Transmogrification.IgnoreReqSpell = 0
+Transmogrification.IgnoreReqLevel = 0
+Transmogrification.IgnoreReqEvent = 0
+Transmogrification.IgnoreReqStats = 0
+
+#
+#    套装功能
+#
+#    Transmogrification.EnableSets
+#        描述：启用或禁用套装功能。如果希望永久禁用，请检查 Transmogrification.h
+#        默认值：1
+#
+#    Transmogrification.MaxSets
+#        描述：玩家可以保存的最大套装数量（硬上限为 25）。
+#        默认值：10
+#
+#    Transmogrification.EnableSetInfo
+#        描述：启用或禁用套装功能的信息按钮。
+#        默认值：1
+#
+#    Transmogrification.SetNpcText
+#        描述：套装功能信息菜单的 NPC 文本条目。
+#        默认值：601084
+#
+#    Transmogrification.SetCostModifier
+#        描述：默认金币费用的乘数（所有费用总和）（设置为 0 以禁用默认费用）。
+#        默认值：3.0
+#
+#    Transmogrification.SetCopperCost
+#        描述：附加在其他费用之上的成本（可以为负值）。
+#        默认值：0
+
+Transmogrification.EnableSets = 1
+Transmogrification.MaxSets = 20
+
+Transmogrification.EnableSetInfo = 1
+Transmogrification.SetNpcText = 601084
+
+Transmogrification.SetCostModifier = 0
+Transmogrification.SetCopperCost = 0
+
+#
+#    幻化加强版（Transmog Plus）
+#
+#    Transmogrification.EnablePlus
+#        描述：启用或禁用幻化加强版。
+#        默认值：0
+#
+#    Transmogrification.MembershipLevels
+#        描述：从 acore_cms_subscriptions 获取会员等级 ID。
+#        示例：Transmogrification.MembershipLevels = "1,2,3"
+#        默认值：""
+#
+#    Transmogrification.MembershipLevelsLegendary
+#        描述：从 acore_cms_subscriptions 获取允许使用传奇物品的会员等级 ID。
+#        示例：Transmogrification.MembershipLevelsLegendary = "1,2,3"
+#        默认值：""
+#
+#    Transmogrification.MembershipLevelsPet
+#        描述：从 acore_cms_subscriptions 获取允许幻化宠物的会员等级 ID。
+#        示例：Transmogrification.MembershipLevelsPet = "1,2,3"
+#        默认值：""
+#
+#    Transmogrification.MembershipLevelsSkipLevelReq
+#        描述：从 acore_cms_subscriptions 获取允许跳过等级检查的会员等级 ID。
+#        示例：Transmogrification.MembershipLevelsSkipLevelReq = "1,2,3"
+#        默认值：""
+#
+#    Transmogrification.PetSpellId
+#        描述：幻化宠物在 spell_dbc 表中的 ID。
+#        示例：Transmogrification.PetSpellId = 2000100
+#        默认值：2000100
+#
+
+Transmogrification.EnablePlus = 1
+Transmogrification.MembershipLevels = ""
+Transmogrification.MembershipLevelsLegendary = ""
+Transmogrification.MembershipLevelsPet = ""
+Transmogrification.MembershipLevelsSkipLevelReq = ""
+Transmogrification.PetSpellId = 2000100
+
+#
+###################################################################################################
