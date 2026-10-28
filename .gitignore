@@ -156,3 +156,30 @@ docker/.data/
 .wow-build-tmp/
 temp/
 *.log
+
+# ==================
+#  MAP DATA (GB-scale, copyrighted — never in git / public repo)
+# ==================
+/data/datalyf/
+
+# ==================
+#  DELIVERABLES zips (large binary, keep local only; docs/md still tracked)
+# ==================
+/deliverables/*.zip
+
+# ==================
+#  VENDORED MODULES wave2 (commit module trees into git)
+# ==================
+!modules/mod-dungeon-quests/
+!modules/mod-attunement-skip/
+!modules/Acore_RecruitAFriend/
+!modules/mod-quest-loot-party/
+!modules/mod-quest-radar/
+!modules/mod-questie-bridge/
+!modules/mod-autobalance/
+!modules/mod-aoe-loot/
+!modules/mod-junk-to-gold-plus/
+!modules/wow-mod-accountwide-pets/
+!modules/mod-dungeonmaster/
+!modules/wow-mod-forever-journal/
+!modules/mod-solocraft/

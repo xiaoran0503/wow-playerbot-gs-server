@@ -1,0 +1,9 @@
+## Interface: 30300
+## Author: Atwood
+## Version: 1.0
+## Title-zhCN: EUI |cff1784d1自定义材质|r Custom Media
+## Notes: Fonts and Textures
+## Notes-zhCN: ElvUI的自定义字体、材质、音效等|cFF68CCEF自定义媒体|r
+## RequiredDeps: ElvUI
+
+ElvUI_CustomMedia.lua

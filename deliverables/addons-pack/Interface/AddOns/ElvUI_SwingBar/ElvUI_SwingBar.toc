@@ -1,0 +1,12 @@
+## Interface: 30300
+## Author: Bunny
+## Version: 1.3
+## Title: EUI |cff1784d1攻击计时条|r Swing Bar
+## Notes: ElvUI攻击计时条
+## RequiredDeps: ElvUI
+
+Locales\Load_Locales.xml
+Libraries\oUF_Swing.lua
+Settings\Load_Settings.xml
+ElvUI_SwingBar.lua
+Config\Load_Config.xml

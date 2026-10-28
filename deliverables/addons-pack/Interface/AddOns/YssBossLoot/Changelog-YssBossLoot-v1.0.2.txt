@@ -1,0 +1,15 @@
+tag v1.0.2
+518545bf60bb2d0c6c2a9e6409086e01c531f383
+Yssaril <N/A>
+2010-08-30 15:01:03 -0500
+
+Tagging as v1.0.2
+
+
+--------------------
+
+Yssaril:
+	- Weekly Loot Update
+	- fix for out of dungeon difficulty selection
+	Ticket 27: should fix dynamic instance diffiulty (ICC)
+	- fix 3d skull positioning

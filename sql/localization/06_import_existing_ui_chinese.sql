@@ -1,0 +1,25 @@
+-- ============================================================
+-- 06_import_existing_ui_chinese.sql
+-- 任务5 "现有部分" — 6 模块 + 谷神既有 Lua 玩家可见字符串审计
+-- 上游 commit: b31a373e94132f9d362b77e3550d6a0a4defb3c7
+-- 说明: 本脚本只写文件, 不执行; 由主代理统一 DB 重放
+-- ============================================================
+--
+-- 结论: 无数据面(DB 文案)改动需要本脚本提供。
+--
+-- 逐模块 DB 文案核查:
+--   1. mod-boss-announcer  : 无 DB 表, 公告文案全部在 C++ 源码硬编码 (已走 patch 中文化)
+--   2. mod-random-enchants : 无 DB 表, 提示文案在 C++ 源码 + conf-seed (已走 patch)
+--   3. mod-transmog        : npc_text 601083/601084 上游 SQL 已带 zhCN 译文
+--                            (2016_11_17_transmog_texts.sql, npc_text_locale.Locale='zhCN')
+--                            module_string / module_string_locale ID 1-88 上游 SQL 已带 zhCN
+--                            (2026_05_09_migrate_to_module_string.sql)
+--                            custom_transmogrification_sets.SetName 为玩家自定义套装名, 非硬编码文案
+--                            仅 command.help(.transmog 子命令) 为英文 GM 帮助文本, SEC_GAMEMASTER, 不在玩家可见范围
+--   4. mod-ah-bot          : 无 DB 表, 机器人后台挂单/购买无玩家可见文案, 邮件文案由核心提供
+--   5. mod-playerbots      : bot 闲聊主力 acore_playerbots.ai_playerbot_texts 已汉化 2268 条
+--                            (由任务其它环节负责, 不在本脚本范围)
+--   6. mod-ale             : API 层, 无 DB 文案
+--
+-- 因此本脚本不包含任何 UPDATE/INSERT 语句, 仅留档说明。
+-- ============================================================

@@ -1279,13 +1279,13 @@ bool BGTactics::HandleConsoleCommand(ChatHandler* handler, char const* args)
 {
     if (!sPlayerbotAIConfig.Enabled)
     {
-        handler->PSendSysMessage("|cffff0000Playerbot system is currently disabled!");
+        handler->PSendSysMessage("|cffff0000机器人系统当前已禁用！");
         return true;
     }
     WorldSession* session = handler->GetSession();
     if (!session)
     {
-        handler->PSendSysMessage("Command can only be used from an active session");
+        handler->PSendSysMessage("此命令只能在在线会话中使用");
         return true;
     }
     std::string const commandOutput = HandleConsoleCommandPrivate(session, args);

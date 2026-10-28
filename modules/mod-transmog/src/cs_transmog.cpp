@@ -157,11 +157,11 @@ public:
         {
             // Notify target of new item in appearance collection
             if (target && !(target->GetPlayerSetting("mod-transmog", SETTING_HIDE_TRANSMOG).value) && !sTransmogrification->CanNeverTransmog(itemTemplate))
-                ChatHandler(target->GetSession()).PSendSysMessage(R"(|c{}|Hitem:{}:0:0:0:0:0:0:0:0|h[{}]|h|r has been added to your appearance collection.)", itemQuality.c_str(), itemId, itemName.c_str());
+                ChatHandler(target->GetSession()).PSendSysMessage(R"(|c{}|Hitem:{}:0:0:0:0:0:0:0:0|h[{}]|h|r 已添加到你的外观收藏。)", itemQuality.c_str(), itemId, itemName.c_str());
 
             // Feedback of successful command execution to GM
             if (isNotConsole && target != handler->GetPlayer())
-                handler->PSendSysMessage(R"(|c{}|Hitem:{}:0:0:0:0:0:0:0:0|h[{}]|h|r has been added to the appearance collection of Player {}.)", itemQuality.c_str(), itemId, itemName.c_str(), nameLink);
+                handler->PSendSysMessage(R"(|c{}|Hitem:{}:0:0:0:0:0:0:0:0|h[{}]|h|r 已添加到玩家 {} 的外观收藏。)", itemQuality.c_str(), itemId, itemName.c_str(), nameLink);
 
             CharacterDatabase.Execute("INSERT INTO custom_unlocked_appearances (account_id, item_template_id) VALUES ({}, {})", accountId, itemId);
         }
@@ -170,7 +170,7 @@ public:
             // Feedback of failed command execution to GM
             if (isNotConsole)
             {
-                handler->PSendSysMessage(R"(Player {} already has item |c{}|Hitem:{}:0:0:0:0:0:0:0:0|h[{}]|h|r in the appearance collection.)", nameLink, itemQuality.c_str(), itemId, itemName.c_str());
+                handler->PSendSysMessage(R"(玩家 {} 的外观收藏中已有物品 |c{}|Hitem:{}:0:0:0:0:0:0:0:0|h[{}]|h|r。)", nameLink, itemQuality.c_str(), itemId, itemName.c_str());
                 handler->SetSentErrorMessage(true);
             }
         }
@@ -265,19 +265,19 @@ public:
             // Failed command execution
             if (!added)
             {
-                handler->PSendSysMessage("Player {} already has ItemSet |cffffffff|Hitemset:{}|h[{} {}]|h|r in the appearance collection.", nameLink, uint32(itemSetId), setName.c_str(), localeNames[locale]);
+                handler->PSendSysMessage("玩家 {} 的外观收藏中已有套装 |cffffffff|Hitemset:{}|h[{} {}]|h|r。", nameLink, uint32(itemSetId), setName.c_str(), localeNames[locale]);
                 handler->SetSentErrorMessage(true);
                 return true;
             }
 
             // Successful command execution
             if (target != handler->GetPlayer())
-                handler->PSendSysMessage("ItemSet |cffffffff|Hitemset:{}|h[{} {}]|h|r has been added to the appearance collection of Player {}.", uint32(itemSetId), setName.c_str(), localeNames[locale], nameLink);
+                handler->PSendSysMessage("套装 |cffffffff|Hitemset:{}|h[{} {}]|h|r 已添加到玩家 {} 的外观收藏。", uint32(itemSetId), setName.c_str(), localeNames[locale], nameLink);
         }
 
         // Notify target of new item in appearance collection
         if (target && !(target->GetPlayerSetting("mod-transmog", SETTING_HIDE_TRANSMOG).value))
-            ChatHandler(target->GetSession()).PSendSysMessage("ItemSet |cffffffff|Hitemset:%d|h[{} {}]|h|r has been added to your appearance collection.", uint32(itemSetId), setName.c_str(), localeNames[locale]);
+            ChatHandler(target->GetSession()).PSendSysMessage("套装 |cffffffff|Hitemset:%d|h[{} {}]|h|r 已添加到你的外观收藏。", uint32(itemSetId), setName.c_str(), localeNames[locale]);
 
         return true;
     }
@@ -286,13 +286,13 @@ public:
     {
         if (!sTransmogrification->IsPortableNPCEnabled)
         {
-            handler->SendErrorMessage("The portable transmogrification NPC is disabled.");
+            handler->SendErrorMessage("便携幻化 NPC 已被禁用。");
             return true;
         }
 
         if (!sTransmogrification->IsTransmogPlusEnabled)
         {
-            handler->SendErrorMessage("The portable transmogrification NPC is a plus feature. Plus features are currently disabled.");
+            handler->SendErrorMessage("便携幻化 NPC 是会员功能，当前会员功能未开启。");
             return true;
         }
 
@@ -300,13 +300,13 @@ public:
 
         if (!sTransmogrification->IsPlusFeatureEligible(player->GetGUID(), PLUS_FEATURE_PET))
         {
-            handler->SendErrorMessage("You are not eligible for the portable transmogrification NPC. Please check your subscription level.");
+            handler->SendErrorMessage("你无权使用便携幻化 NPC，请检查你的会员等级。");
             return true;
         }
 
         if (!sSpellMgr->GetSpellInfo(sTransmogrification->PetSpellId))
         {
-            handler->SendErrorMessage("The portable transmogrification NPC spell is not available.");
+            handler->SendErrorMessage("便携幻化 NPC 法术不可用。");
             return true;
         }
 
@@ -804,9 +804,9 @@ public:
     static bool HandleReloadTransmogConfig(ChatHandler* handler)
     {
         sTransmogrification->LoadConfig(true);
-        handler->SendSysMessage("Transmog configs reloaded.");
+        handler->SendSysMessage("幻化配置已重新加载。");
         sTransmogrification->LoadCollections();
-        handler->SendSysMessage("Transmog collections reloaded.");
+        handler->SendSysMessage("幻化收藏已重新加载。");
         return true;
     }
 };

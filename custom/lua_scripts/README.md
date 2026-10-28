@@ -9,6 +9,7 @@
 | 文件 | 大小 | 用途 |
 |---|---:|---|
 | `SupMalachite.lua` | 93204 B | 「超级炉石/传送石」主脚本。绑定物品 entry **6948**，注册 `RegisterItemGossipEvent(1=Show, 2=Select)`。Gossip 菜单含：副本传送（Instances 表约 70 组 {地图ID,难度}）、随身 NPC 召唤（商业技能训练师 28700~28742、职业雕文商、经验锁定 35364/35365、幻化大师 90003、自定义 190001 等）、附魔、设家、GM 专用。全文中文对话文本与硬编码 entry。 |
+| `RecruitAFriend.lua` | — | 「战友招募」脚本（上游 Acore_RecruitAFriend，commit d72b8057）。玩家命令 `.raf list/summon/unbind/help`、招募链接广播、奖励邮件（主题/正文）已汉化简体中文；GM 命令 `.bindraf/.forcebindraf/.raf lookup` 保留英文原文（运营端工具）。落位本目录后由 mod-ale 自动加载。 |
 | `掉落物品随机附魔.lua` | 3674 B | 掉落随机附魔。`RegisterPlayerEvent(32, OnLoot)`；按稀有度概率从 `item_enchantment_random_tiers` 表随机 roll 1~4 个附魔槽，对 WEAPON(类2)/ARMOR(类4) 调 `item:SetEnchantment`。 |
 | `extensions/_Misc.ext` | 493 B | Eluna `.ext` 预加载：`math.randomseed`；`require("StackTracePlus")` 并把 `debug.traceback` 替换为增强堆栈。 |
 | `extensions/ObjectVariables.ext` | 3179 B | Eluna `.ext` 预加载：为 Map/Player/Creature/GameObject 注入 `SetData/GetData` 运行期会话数据存储，登出/对象删除/地图销毁时自动清数据。 |

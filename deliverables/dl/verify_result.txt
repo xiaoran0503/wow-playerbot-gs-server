@@ -1,0 +1,108 @@
+ADDON                            TOC                                IFACE      OK  VERSION / AUTHOR
+Atlas                            Atlas.toc                          30300      Y  1.17.0 / Dan Gilbert
+AtlasLoot                        AtlasLoot.toc                      30300      Y  v5.11.04 / Hegarol
+AtlasLootFu                      AtlasLootFu.toc                    30300      Y  v5.11.04 / Hegarol
+AtlasLoot_BurningCrusade         AtlasLoot_BurningCrusade.toc       30300      Y  v5.11.04 / Hegarol
+AtlasLoot_Crafting               AtlasLoot_Crafting.toc             30300      Y  v5.11.04 / Hegarol
+AtlasLoot_OriginalWoW            AtlasLoot_OriginalWoW.toc          30300      Y  v5.11.04 / Hegarol
+AtlasLoot_WorldEvents            AtlasLoot_WorldEvents.toc          30300      Y  v5.11.04 / Hegarol
+AtlasLoot_WrathoftheLichKing     AtlasLoot_WrathoftheLichKing.toc   30300      Y  v5.11.04 / Hegarol
+AtlasQuest                       AtlasQuest.toc                     30300      Y  4.4.3 / Thandrenn
+Atlas_DungeonLocs                Atlas_DungeonLocs.toc              30300      Y  1.17.0 / Dan Gilbert
+Atlas_OutdoorRaids               Atlas_OutdoorRaids.toc             30300      Y  1.17.0 / Dan Gilbert
+Auctionator                      Auctionator.toc                    30300      Y  2.6.3 / Zirco
+BlizzMove                        BlizzMove.toc                      30300      Y  v0.7 / yess
+DBM-ChamberOfAspects             DBM-ChamberOfAspects.toc           30300      Y   / 
+DBM-Coliseum                     DBM-Coliseum.toc                   30300      Y   / 
+DBM-Core                         DBM-Core.toc                       30300      Y  9.2.25 / Barsoom, Bunny67, Zidras, DBM-Frostmourn
+DBM-EyeOfEternity                DBM-EyeOfEternity.toc              30300      Y   / 
+DBM-GUI                          DBM-GUI.toc                        30300      Y  9.2.25 / MysticalOS, QartemisT
+DBM-Gruul                        DBM-Gruul.toc                      30300      Y   / 
+DBM-Hyjal                        DBM-Hyjal.toc                      30300      Y   / 
+DBM-Icecrown                     DBM-Icecrown.toc                   30300      Y   / 
+DBM-Karazhan                     DBM-Karazhan.toc                   30300      Y   / 
+DBM-MC                           DBM-MC.toc                         30300      Y   / 
+DBM-Magtheridon                  DBM-Magtheridon.toc                30300      Y   / 
+DBM-Naxx                         DBM-Naxx.toc                       30300      Y   / 
+DBM-Onyxia                       DBM-Onyxia.toc                     30300      Y   / 
+DBM-Outland                      DBM-Outland.toc                    30300      Y   / 
+DBM-Party-BC                     DBM-Party-BC.toc                   30300      Y   / Arta/MysticalOS
+DBM-Party-Classic                DBM-Party-Classic.toc              30300      Y   / MysticalOS
+DBM-Party-WotLK                  DBM-Party-WotLK.toc                30300      Y   / 
+DBM-PvP                          DBM-PvP.toc                        30300      Y   / Nitram/Tandanu/Arta
+DBM-Serpentshrine                DBM-Serpentshrine.toc              30300      Y   / 
+DBM-SpellTimers                  DBM-SpellTimers.toc                30300      Y   / Nitram and Tandanu
+DBM-StatusBarTimers              DBM-StatusBarTimers.toc            30300      Y  9.2.25 / MysticalOS, QartemisT
+DBM-Sunwell                      DBM-Sunwell.toc                    30300      Y   / 
+DBM-TheEye                       DBM-TheEye.toc                     30300      Y   / 
+DBM-Ulduar                       DBM-Ulduar.toc                     30300      Y   / 
+DBM-VPVV                         DBM-VPVV.toc                       30300      Y  3.3.5 / VV
+DBM-VoA                          DBM-VoA.toc                        30300      Y   / Nitram/Tandanu
+DBM-WorldEvents                  DBM-WorldEvents.toc                30300      Y   / 
+DBM-ZG                           DBM-ZG.toc                         30300      Y   / 
+DBM-ZulAman                      DBM-ZulAman.toc                    30300      Y   / 
+Decursive                        Decursive.toc                      30300      Y  2.5.1-12-gb39554a / Archarodim
+Details                          Details.toc                        30300      Y   / 
+Duowan                           Duowan.toc                         30300      Y   / dugu
+ElvUI                            ElvUI.toc                          30300      Y  6.08 / Elv, Bunny
+ElvUI_AddOnSkins                 ElvUI_AddOnSkins.toc               30300      Y  1.06 / Bunny, Azilroka, Sortokk
+ElvUI_AuraBarsMovers             ElvUI_AuraBarsMovers.toc           30300      Y  1.31 / Darth Predator
+ElvUI_CustomMedia                ElvUI_CustomMedia.toc              30300      Y  1.0 / Atwood
+ElvUI_CustomTags                 ElvUI_CustomTags.toc               30300      Y  1.03 / Blazeflack
+ElvUI_DataTextColors             ElvUI_DataTextColors.toc           30300      Y  1.14 / Benik
+ElvUI_Enhanced                   ElvUI_Enhanced.toc                 30300      Y  1.05 / Bunny, Apollyon, Loaal, Crum
+ElvUI_EnhancedFriendsList        ElvUI_EnhancedFriendsList.toc      30300      Y  1.09 / Apollyon, Bunny
+ElvUI_ExtraActionBars            ElvUI_ExtraActionBars.toc          30300      Y  1.00 / Blazeflack
+ElvUI_ImprovedSpecSwitch         ElvUI_ImprovedSpecSwitch.toc       30300      Y  1.00 / Lockslap, Zidras, Loaal
+ElvUI_LocPlus                    ElvUI_LocPlus.toc                  30300      Y  2.25 / Benik
+ElvUI_OptionsUI                  ElvUI_OptionsUI.toc                30300      Y  1.06 / Elv, Bunny
+ElvUI_ProjectZidras              ElvUI_ProjectZidras.toc            30300      Y  2.0 / Zidras
+ElvUI_SwingBar                   ElvUI_SwingBar.toc                 30300      Y  1.3 / Bunny
+ElvUI_VisualProcs                ElvUI_VisualProcs.toc              30300      Y  1.03 / Bunny, Pinya, brotalnia
+GatherMate2                      GatherMate2.toc                    30300      Y  asc-1.0.8 (v1.0.3 base) / kagaro, xinhuan, nevcairiel, Ascension C
+GatherMate2_Data                 GatherMate2_Data.toc               30300      Y  asc-1.0.3 (v1.4.0 base) / kagaro, Xinhuan, Ascension Compat by Xan
+Immersion                        Immersion.toc                      30300      Y  1.4.14 / Sebastian Lindfors lennme
+ImprovedLootFrame                ImprovedLootFrame.toc              30300      Y  3.7.7 / Cybeloras of Aerie Peak
+Journal                          Journal.toc                        30300      Y  2.5.5 / buildthehomelab
+LFGForwarder                     LFGForwarder.toc                   30300      Y  0.1 / 
+LearningAid                      LearningAid.toc                    30300      Y  1.07.1 / Jamash (Kil'jaeden-US)
+MBB                              MBB.toc                            30300      Y   / Tunhadil, Fixed by Pericles for WotLK
+Mendeleev                        Mendeleev.toc                      30300      Y  3.0 / Rabbit
+NPCMark                          NPCMark.toc                        30300      Y  0.1.4 / Terry
+Omen                             Omen.toc                           30300      Y  3.0.9 / Xinhuan
+OmniCC                           OmniCC.toc                         30300      Y  3.0 / Tuller
+OmniCC_Config                    OmniCC_Config.toc                  30300      Y   / Tuller
+Pawn                             Pawn.toc                           30300      Y  1.3.11 / 
+Postal                           Postal.toc                         30300      Y  3.3.2 / Xinhuan
+QuestRadar                       QuestRadar.toc                     30300      Y  0.9.0 / Warblups
+Questie-335                      Questie-335-Classic.toc            30300      Y  9.5.1 / Aero/Logon/Muehe/TheCrux(BreakBB)/Drejjm
+Questie-335                      Questie-335-TBC.toc                30300      Y  9.5.1 / Aero/Logon/Muehe/TheCrux(BreakBB)/Drejjm
+Questie-335                      Questie-335.toc                    30300      Y  9.5.1 / Aero/Logon/Muehe/TheCrux(BreakBB)/Drejjm
+Questie-335                      Questie-BCC.toc                    20504      N  9.5.1 / Aero/Logon/Muehe/TheCrux(BreakBB)/Drejjm
+Questie-335                      Questie-Classic.toc                11502      N  9.5.1 / Aero/Logon/Muehe/TheCrux(BreakBB)/Drejjm
+Questie-335                      Questie-WOTLKC.toc                 30403      N  9.5.1 / Aero/Logon/Muehe/TheCrux(BreakBB)/Drejjm
+Questie-335                      Questie.toc                        00000      N   / 
+RangeDisplay                     RangeDisplay.toc                   30300      Y  3.1 / mitch0
+RatingSummary                    RatingSummary.toc                  30300      Y   / Warbaby - 聖光之願<冰封十字軍>
+SimpleRaidTargetIcons            SimpleRaidTargetIcons.toc          30300      Y  1.08 / Brodrick (aka Kirov)
+TheBurningTrade                  TheBurningTrade.toc                30300      Y   / 
+TidyPlates                       TidyPlates.toc                     30300      Y  6.5.0 / Binbwen and Friends (Kader Backport)
+TidyPlates_Graphite              TidyPlates_Graphite.toc            30300      Y   / Binny (Kader Backport)
+TidyPlates_Grey                  TidyPlates_Grey.toc                30300      Y   / Binny (Kader Backport)
+TidyPlates_Neon                  TidyPlates_Neon.toc                30300      Y   / Binny (Kader Backport)
+TidyPlates_Quatre                TidyPlates_Quatre.toc              30300      Y   / Binny (Kader Backport)
+TidyPlates_ThreatPlates          TidyPlates_ThreatPlates.toc        30300      Y  5.7 / Suicidal Katt (Kader Backport)
+TomTom                           TomTom.toc                         30300      Y  1.3.0 / Cladhaire (fork: WarCrafted)
+WeakAuras                        WeakAuras.toc                      30300      Y  4.0.0 / The WeakAuras Team
+WeakAurasArchive                 WeakAurasArchive.toc               30300      Y   / 
+WeakAurasModelPaths              WeakAurasModelPaths.toc            30300      Y  2.16.0-beta1 / Mirrored and the WeakAuras Team
+WeakAurasOptions                 WeakAurasOptions.toc               30300      Y  4.0.0 / The WeakAuras Team
+YssBossLoot                      YssBossLoot.toc                    30300      Y  v1.0.4-2023 / Yssaril
+ZygorTalentAdvisor               ZygorTalentAdvisor.toc             30300      Y  2.0.240 / Sinus Pi
+_NPCScan                         _NPCScan.toc                       30300      Y  3.3.5.5 / Saiket
+
+TOTAL toc files: 101 | non-30300/30400: 4
+  BAD: ('Questie-335', 'Questie-BCC.toc', '20504')
+  BAD: ('Questie-335', 'Questie-Classic.toc', '11502')
+  BAD: ('Questie-335', 'Questie-WOTLKC.toc', '30403')
+  BAD: ('Questie-335', 'Questie.toc', '00000')

@@ -1,0 +1,10 @@
+## Interface: 30300
+## Author: Bunny, Pinya, brotalnia
+## Version: 1.03
+## Title: EUI |cff1784d1触发特效|r Visual Procs
+## Notes: 技能触发可视化特效。
+## RequiredDeps: ElvUI
+
+LibBlizzardProcs\LibBlizzardProcs.xml
+locales\load_locales.xml
+core.lua

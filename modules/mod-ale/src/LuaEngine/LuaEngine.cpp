@@ -157,9 +157,9 @@ void ALE::_ReloadALE()
     ASSERT(IsInitialized());
 
     if (eConfigMgr->GetOption<bool>("ALE.PlayerAnnounceReload", false))
-        eWorldSessionMgr->SendServerMessage(SERVER_MSG_STRING, "Reloading ALE...");
+        eWorldSessionMgr->SendServerMessage(SERVER_MSG_STRING, "正在重载 ALE...");
     else
-        ChatHandler(nullptr).SendGMText(SERVER_MSG_STRING, "Reloading ALE...");
+        ChatHandler(nullptr).SendGMText(SERVER_MSG_STRING, "正在重载 ALE...");
 
     // Remove all timed events
     sALE->eventMgr->SetStates(LUAEVENT_STATE_ERASE);

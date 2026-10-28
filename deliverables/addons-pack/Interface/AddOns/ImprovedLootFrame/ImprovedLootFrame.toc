@@ -1,0 +1,9 @@
+﻿## Interface: 30300
+## Title: Improved Loot Frame
+## Title-zhCN: [界面] |cff69ccf0拾取增强|r Improved Loot Frame
+## Version: 3.7.7
+## Author: Cybeloras of Aerie Peak
+## Notes: 拾取框架扩展，战利品可发送小队/团队/工会频道。
+## X-Curse-Project-ID: 30888
+
+ImprovedLootFrame.lua

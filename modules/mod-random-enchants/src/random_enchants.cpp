@@ -55,11 +55,11 @@ void rollPossibleEnchant(Player* player, Item* item)
 
 
     if (slotRand[2] != -1)
-        chathandle.PSendSysMessage("Newly Acquired |cffFF0000 {} |rhas received|cffFF0000 3 |rrandom enchantments!", name);
+        chathandle.PSendSysMessage("新获得的 |cffFF0000 {} |r被附加了 |cffFF0000 3 |r条随机附魔！", name);
     else if (slotRand[1] != -1)
-        chathandle.PSendSysMessage("Newly Acquired |cffFF0000 {} |rhas received|cffFF0000 2 |rrandom enchantments!", name);
+        chathandle.PSendSysMessage("新获得的 |cffFF0000 {} |r被附加了 |cffFF0000 2 |r条随机附魔！", name);
     else if (slotRand[0] != -1)
-        chathandle.PSendSysMessage("Newly Acquired |cffFF0000 {} |rhas received|cffFF0000 1 |rrandom enchantment!", name);
+        chathandle.PSendSysMessage("新获得的 |cffFF0000 {} |r被附加了 |cffFF0000 1 |r条随机附魔！", name);
 }
 
 uint32 getRandEnchantment(Item* item)
@@ -130,7 +130,7 @@ uint32 getRandEnchantment(Item* item)
 void RandomEnchantsPlayer::OnPlayerLogin(Player* player)
 {
     if (sConfigMgr->GetOption<bool>("RandomEnchants.AnnounceOnLogin", true) && (sConfigMgr->GetOption<bool>("RandomEnchants.Enable", true)))
-        ChatHandler(player->GetSession()).SendSysMessage(sConfigMgr->GetOption<std::string>("RandomEnchants.OnLoginMessage", "This server is running a RandomEnchants Module.").c_str());
+        ChatHandler(player->GetSession()).SendSysMessage(sConfigMgr->GetOption<std::string>("RandomEnchants.OnLoginMessage", "本服已运行随机附魔模块。").c_str());
 }
 
 void RandomEnchantsPlayer::OnPlayerLootItem(Player* player, Item* item, uint32 /*count*/, ObjectGuid /*lootguid*/)

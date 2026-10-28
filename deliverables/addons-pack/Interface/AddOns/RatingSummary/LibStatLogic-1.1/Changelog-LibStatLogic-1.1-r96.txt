@@ -1,0 +1,17 @@
+------------------------------------------------------------------------
+r96 | Whitetooth | 2010-03-20 14:09:28 +0000 (Sat, 20 Mar 2010) | 3 lines
+Changed paths:
+   M /trunk/LibStatLogic-1.1/LibStatLogic-1.1.lua
+
+- 3.3.3: Death Knight: Endless Winter: Grants 2/4% strength.
+- 3.3.3: Death Knight: Unbreakable Armor: The amount of strength granted is now 20%, up from 10%.
+- 3.3.3: Warrior: Vitality: Now boosts Stamina by 3/6/9%
+------------------------------------------------------------------------
+r95 | Whitetooth | 2010-02-09 15:49:02 +0000 (Tue, 09 Feb 2010) | 3 lines
+Changed paths:
+   M /trunk/LibStatLogic-1.1/LibStatLogic-1.1.lua
+
+- Paladin: Sacred Duty now provides 2 / 4% Stamina, down from 4 / 8% Stamina.
+- Death Knight: Frost Presence now provides 8% Stamina, up from 6% Stamina.
+- Death Knight: Icebound Fortitude now provides 30% base damage reduction, up from 20% damage reduction
+------------------------------------------------------------------------

@@ -157,8 +157,7 @@ public:
             if (sPlayerbotAIConfig.Enabled)
             {
                 ChatHandler(player->GetSession()).SendSysMessage(
-                    "|cff00ff00This server runs with |cff00ccffmod-playerbots|r "
-                    "|cffcccccchttps://github.com/mod-playerbots/mod-playerbots|r");
+                    "|cff00ff00本服已启用 |cff00ccffmod-playerbots|r 机器人模块 |cffcccccchttps://github.com/mod-playerbots/mod-playerbots|r");
             }
 
             if (sPlayerbotAIConfig.Enabled || sPlayerbotAIConfig.RandomBotAutologin)
@@ -166,7 +165,7 @@ public:
                 std::string maxAllowedBotCount = std::to_string(sRandomPlayerbotMgr.GetMaxAllowedBotCount());
 
                 ChatHandler(player->GetSession()).SendSysMessage(
-                    "|cff00ff00Playerbots:|r The server is configured with " + maxAllowedBotCount + " bots.");
+                    "|cff00ff00机器人：|r 本服配置了 " + maxAllowedBotCount + " 个机器人。");
             }
         }
     }

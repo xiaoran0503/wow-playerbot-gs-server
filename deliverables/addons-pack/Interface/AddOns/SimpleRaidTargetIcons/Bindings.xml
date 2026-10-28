@@ -1,0 +1,5 @@
+<Bindings>
+	<Binding name="SRTI_SHOW" header="SRTI_TITLE">
+		SRTI.ShowFromBinding();
+	</Binding>
+</Bindings>

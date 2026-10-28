@@ -1,0 +1,23 @@
+# Documentación de trabajo interna (planes, investigaciones, notas de sesión)
+.agents/
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+*.claude-agent.md
+
+# WoW / empaquetado
+*.zip
+*.bak
+WowMatrix.dat
+.pkgmeta
+
+# Editor / SO
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Credenciales o configuración local que no debe compartirse
+*.env
+*.local

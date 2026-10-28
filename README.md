@@ -82,7 +82,7 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File scripts\smoke-test.ps1
 有 docker compose 的环境也可用 `docker/docker-compose.yml`（等效）。
 
 端口：auth **20241** / world **20242** / MySQL 宿主机 **3307** / 门户 **8081**。
-数据目录（maps/dbc/vmaps/mmaps）只读挂载自 `E:\缓存\WOW\GS_Server\datalyf`（`WOW_DATA_DIR` 可改）。
+数据目录（maps/dbc/vmaps/mmaps）只读挂载自仓库内 `data\datalyf`（已全量拷贝，原件 `E:\缓存\WOW\GS_Server\datalyf` 不再被引用；`WOW_DATA_DIR` 可改）。
 
 ### 全新安装（无迁移数据）
 ```powershell

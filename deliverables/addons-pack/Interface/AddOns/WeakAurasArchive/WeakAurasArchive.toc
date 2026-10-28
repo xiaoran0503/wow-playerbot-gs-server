@@ -1,0 +1,8 @@
+## Interface: 30300
+## Title: WeakAuras Archive
+## Title-zhCN: [WA] |cff69ccf0WeakAuras|r Archive
+## LoadOnDemand: 1
+## SavedVariables: WeakAurasArchive
+## Dependencies: WeakAuras
+
+WeakAurasArchive.lua

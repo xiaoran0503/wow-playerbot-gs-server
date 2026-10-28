@@ -1,0 +1,16 @@
+## Interface: 30300
+## Title: [界面] |cff69ccf0装备对比|r Pawn 
+## Version: 1.3.11
+## Notes: Pawn计算物品的评分数，让你很容易看到哪个更有提升。
+## OptionalDependencies: AtlasLoot, EQCompare, EquipCompare, MultiTips, Outfitter
+## SavedVariables: PawnCommon
+## SavedVariablesPerCharacter: PawnOptions, PawnWowheadScaleProviderOptions
+
+VgerCore\VgerCore.lua
+
+Localization.lua
+Gems.lua
+Pawn.lua
+PawnUI.lua
+PawnUI.xml
+Wowhead.lua

@@ -1,0 +1,59 @@
+## Interface: 30300
+## Title: |cffC495DDYssBossLoot|r
+## Title-zhCN: 副本掉落查询|cffC495DDYssBossLoot|r
+## Author: Yssaril
+## Version: v1.0.4
+## Notes: Displays Instance Maps
+## Notes-zhCN: 显示物品掉落地图及掉率。
+## X-Curse-Packaged-Version: v1.0.4
+## X-Curse-Project-Name: YssBossLoot
+## X-Curse-Project-ID: yssbossloot
+## X-Curse-Repository-ID: wow/yssbossloot/mainline
+## LoadManagers: AddonLoader
+## X-LoadOn-Always: Delayed
+## OptionalDeps: Ace3,LibBabble-Zone-3.0.01,LibBabble-Boss-3.0.01,LibDBIcon-1.0,LibInstanceLootData-1.0.01
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariables: YssBossLootDB,YssBossLootMissingTranslations
+
+## Title-zhCN: YssBossLoot 副本掉落查询
+## Notes-zhCN: |n|cff00ff00YssBossLoot|r |n|n|cff32CD99显示副本中的首领与小怪可能掉落的物品。|n|n插件数据库已添加经典旧世和外域副本地图ID和BOSS坐标。 |n|n宏/ybl|n|n玉素奴香@哈霍兰CN |n|n个人仓库：|nhttps://github.com/JosephineYusunuxiang|r |n|n
+## Version: v1.0.4-2023
+## X-Category: 地图
+#插件本体来源：NEW20211009更新Elvui插件包及界面分享与探讨https://uiwow.com/thread-6775-1-1.html
+#经典旧世和外域数据库来源：https://uiwow.com/forum.php?mod=redirect&goto=findpost&ptid=3434&pid=46998
+
+Libs\Libstub\Libstub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\AceConfig-3.0\AceConfig-3.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
+Libs\LibBabble-Zone-3.0.01\lib.xml
+Libs\LibBabble-Boss-3.0.01\lib.xml
+Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
+Libs\LibInstanceLootData-1.0.01\lib.xml
+Localization\enUS.lua
+Localization\deDE.lua
+Localization\esES.lua
+Localization\esMX.lua
+Localization\frFR.lua
+Localization\koKR.lua
+Localization\ruRU.lua
+Localization\zhCN.lua
+Localization\zhTW.lua
+widgets\LootWidget.lua
+Data\BossData.lua
+Tooltip.lua
+Core.lua
+ItemQuery.lua
+Options.lua
+LDBplugin.lua
+WorldMapSupport.lua
+Filters\TypeFilter.lua
+Filters\EquipLocFilter.lua
+Filters\ItemStatFilter.lua
+Filters\ClassFilter.lua
+

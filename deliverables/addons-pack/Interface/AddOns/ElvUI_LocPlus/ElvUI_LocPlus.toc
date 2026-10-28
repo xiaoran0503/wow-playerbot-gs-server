@@ -1,0 +1,12 @@
+﻿## Interface: 30300
+## Author: Benik
+## Version: 2.25
+## Title: EUI |cff1784d1区域增强|r Location Plus
+## Notes: ElvUI的插件，它增加了位置，坐标和信息提示。
+## RequiredDeps: ElvUI
+## OptionalDeps: LibTourist-3.0
+## DefaultState: Enabled
+
+Libraries\Load_Libraries.xml
+locales\load_locales.xml
+init.xml

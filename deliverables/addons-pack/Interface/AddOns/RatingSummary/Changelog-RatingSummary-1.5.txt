@@ -1,0 +1,20 @@
+------------------------------------------------------------------------
+r5 | warbaby | 2010-03-30 01:49:10 +0000 (Tue, 30 Mar 2010) | 1 line
+Changed paths:
+   A /tags/1.5 (from /trunk:4)
+
+Tagging as 1.5
+------------------------------------------------------------------------
+r4 | warbaby | 2010-03-30 01:48:31 +0000 (Tue, 30 Mar 2010) | 2 lines
+Changed paths:
+   D /trunk/LibStatLogic-1.1/Changelog-LibStatLogic-1.1-r83.txt
+   A /trunk/LibStatLogic-1.1/Changelog-LibStatLogic-1.1-r96.txt
+   M /trunk/LibStatLogic-1.1/LibStatLogic-1.1/LibStatLogic-1.1.lua
+   M /trunk/LibStatLogic-1.1/LibStatLogic-1.1.toc
+   M /trunk/Localization.lua
+   M /trunk/RatingSummary.lua
+   M /trunk/RatingSummary.toc
+
+- Smarter anchors for comparison frames.
+- Newest LibStatLogic included (r96 for 3.3.3)
+------------------------------------------------------------------------

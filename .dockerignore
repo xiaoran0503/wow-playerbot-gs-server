@@ -10,5 +10,11 @@
 .idea
 !.gitkeep
 
+# GB-scale local map data copy — never ship into build context
+/data/datalyf/
+
+# client-side addons deliverables (large binary, not part of server build)
+/deliverables/
+
 # do not ignore the ccache folder (used by the ci)
 !/var/docker/ccache

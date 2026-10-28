@@ -1,0 +1,22 @@
+## Interface: 30300
+## Author: Zidras
+## Version: 2.0
+## Title:  EUI |cff1784d1Project Zidras|r 
+## Notes: |cff00BFFFProject Zidras|r 是一个ElvUI插件，它为核心插件添加了新功能。
+## SavedVariables: ProjectZidrasDB
+## RequiredDeps: ElvUI
+## DefaultState: Enabled
+## X-Credits: Apollyon, Loaal, Inmortalz, Empress, Kader
+## X-Website: https://github.com/Zidras/ElvUI_ProjectZidras
+## X-Discord: |cf5865F2https://discord.gg/CyVWDWS|r
+## X-Donate: https://streamelements.com/the_zidras/tip
+
+Locales\Load_Locales.xml
+Libraries\Load_Libraries.xml
+
+ElvUI_ProjectZidras.lua
+
+Core\Load_Core.xml
+Defaults\Load_Defaults.xml
+Modules\Load_Modules.xml
+Options\Load_Options.xml

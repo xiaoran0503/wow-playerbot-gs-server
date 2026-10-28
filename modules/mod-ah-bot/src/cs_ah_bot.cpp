@@ -103,8 +103,8 @@ public:
 
         if (!opt)
         {
-            handler->PSendSysMessage("Invalid syntax");
-            handler->PSendSysMessage("Try ahbotoptions help to see a list of options.");
+            handler->PSendSysMessage("语法错误");
+            handler->PSendSysMessage("输入 ahbotoptions help 查看选项列表。");
 
             return false;
         }
@@ -121,7 +121,7 @@ public:
 
             if (!param1)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions buyer $state (0 off 1 on)");
+                handler->PSendSysMessage("用法：ahbotoptions buyer $state（0 关 1 开）");
                 return false;
             }
 
@@ -138,7 +138,7 @@ public:
 
             if (!param1)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions seller $state (0 off 1 on)");
+                handler->PSendSysMessage("用法：ahbotoptions seller $state（0 关 1 开）");
                 return false;
             }
 
@@ -155,7 +155,7 @@ public:
 
             if (!param1)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions useMarketPrice $state (0 off 1 on)");
+                handler->PSendSysMessage("用法：ahbotoptions useMarketPrice $state（0 关 1 开）");
                 return false;
             }
 
@@ -195,7 +195,7 @@ public:
 
         if (!opt)
         {
-            handler->PSendSysMessage("Invalid syntax; the auction house id must be 2, 6 or 7");
+            handler->PSendSysMessage("语法错误；拍卖行 ID 必须为 2、6 或 7");
             return false;
         }
 
@@ -205,22 +205,22 @@ public:
 
         if (strncmp(opt, "help", l) == 0)
         {
-            handler->PSendSysMessage("AHBot commands:");
-            handler->PSendSysMessage("buyer - enable/disable buyer");
-            handler->PSendSysMessage("seller - enable/disabler seller");
-            handler->PSendSysMessage("usemarketprice - enable/disabler selling at market price");
-            handler->PSendSysMessage("ahexpire - remove all bot auctions");
-            handler->PSendSysMessage("minitems - set min auctions");
-            handler->PSendSysMessage("maxitems - set max auctions");
-            handler->PSendSysMessage("percentages - set selling percentages");
-            handler->PSendSysMessage("minprice - set min price");
-            handler->PSendSysMessage("maxprice - set max price");
-            handler->PSendSysMessage("minbidprice - set min bid price for buyer");
-            handler->PSendSysMessage("maxbidprice - set max bid price for buyer");
-            handler->PSendSysMessage("maxstack - set max stack");
-            handler->PSendSysMessage("buyerprice - set the buyer price policy");
-            handler->PSendSysMessage("bidinterval - set the bid interval for buyer");
-            handler->PSendSysMessage("bidsperinterval - set the bid amount for buyer");
+            handler->PSendSysMessage("拍卖行机器人命令：");
+            handler->PSendSysMessage("buyer - 启用/关闭购买机器人");
+            handler->PSendSysMessage("seller - 启用/关闭出售机器人");
+            handler->PSendSysMessage("usemarketprice - 启用/关闭按市场价出售");
+            handler->PSendSysMessage("ahexpire - 清除所有机器人挂单");
+            handler->PSendSysMessage("minitems - 设置最低挂单数");
+            handler->PSendSysMessage("maxitems - 设置最高挂单数");
+            handler->PSendSysMessage("percentages - 设置各品质出售比例");
+            handler->PSendSysMessage("minprice - 设置最低价格");
+            handler->PSendSysMessage("maxprice - 设置最高价格");
+            handler->PSendSysMessage("minbidprice - 设置买家最低出价倍率");
+            handler->PSendSysMessage("maxbidprice - 设置买家最高出价倍率");
+            handler->PSendSysMessage("maxstack - 设置最大堆叠");
+            handler->PSendSysMessage("buyerprice - 设置买家出价策略");
+            handler->PSendSysMessage("bidinterval - 设置买家出价间隔");
+            handler->PSendSysMessage("bidsperinterval - 设置每次间隔出价数量");
 
             return true;
         }
@@ -228,7 +228,7 @@ public:
         {
             if (!ahMapIdStr)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions ahexpire $ahMapID (2, 6 or 7)");
+                handler->PSendSysMessage("用法：ahbotoptions ahexpire $ahMapID（2、6 或 7）");
                 return false;
             }
 
@@ -243,7 +243,7 @@ public:
 
             if (!ahMapIdStr || !param1)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions minitems $ahMapID (2, 6 or 7) $minItems");
+                handler->PSendSysMessage("用法：ahbotoptions minitems $ahMapID（2、6 或 7）$minItems");
                 return false;
             }
 
@@ -258,7 +258,7 @@ public:
 
             if (!ahMapIdStr || !param1)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions maxitems $ahMapID (2, 6 or 7) $maxItems");
+                handler->PSendSysMessage("用法：ahbotoptions maxitems $ahMapID（2、6 或 7）$maxItems");
                 return false;
             }
 
@@ -286,10 +286,10 @@ public:
 
             if (!ahMapIdStr || !param14)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions percentages $ahMapID (2, 6 or 7) $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14");
-                handler->PSendSysMessage("1 GreyTradeGoods 2 WhiteTradeGoods 3 GreenTradeGoods 4 BlueTradeGoods 5 PurpleTradeGoods");
-                handler->PSendSysMessage("6 OrangeTradeGoods 7 YellowTradeGoods 8 GreyItems 9 WhiteItems 10 GreenItems 11 BlueItems");
-                handler->PSendSysMessage("12 PurpleItems 13 OrangeItems 14 YellowItems");
+                handler->PSendSysMessage("用法：ahbotoptions percentages $ahMapID（2、6 或 7）$1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14");
+                handler->PSendSysMessage("1 灰色材料 2 白色材料 3 绿色材料 4 蓝色材料 5 紫色材料");
+                handler->PSendSysMessage("6 橙色材料 7 黄色材料 8 灰色装备 9 白色装备 10 绿色装备 11 蓝色装备");
+                handler->PSendSysMessage("12 紫色装备 13 橙色装备 14 黄色装备");
 
                 return false;
             }
@@ -313,7 +313,7 @@ public:
 
             if (totalPercent == 0 || totalPercent != 100)
             {
-                handler->PSendSysMessage("The total must add up to 100%%");
+                handler->PSendSysMessage("所有比例之和必须等于 100%%");
 
                 return false;
             }
@@ -360,7 +360,7 @@ public:
 
             if (!ahMapIdStr || !param1 || !param2)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions minprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                handler->PSendSysMessage("用法：ahbotoptions minprice $ahMapID（2、6 或 7）$color（grey/white/green/blue/purple/orange/yellow）$price");
                 return false;
             }
 
@@ -375,7 +375,7 @@ public:
             }
             else
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions minprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                handler->PSendSysMessage("用法：ahbotoptions minprice $ahMapID（2、6 或 7）$color（grey/white/green/blue/purple/orange/yellow）$price");
                 return false;
             }
         }
@@ -386,7 +386,7 @@ public:
 
             if (!ahMapIdStr || !param1 || !param2)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions maxprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                handler->PSendSysMessage("用法：ahbotoptions maxprice $ahMapID（2、6 或 7）$color（grey/white/green/blue/purple/orange/yellow）$price");
                 return false;
             }
 
@@ -401,7 +401,7 @@ public:
             }
             else
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions maxprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                handler->PSendSysMessage("用法：ahbotoptions maxprice $ahMapID（2、6 或 7）$color（grey/white/green/blue/purple/orange/yellow）$price");
                 return false;
             }
         }
@@ -412,7 +412,7 @@ public:
 
             if (!ahMapIdStr || !param2 || !param2)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions minbidprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                handler->PSendSysMessage("用法：ahbotoptions minbidprice $ahMapID（2、6 或 7）$color（grey/white/green/blue/purple/orange/yellow）$price");
                 return false;
             }
 
@@ -420,7 +420,7 @@ public:
 
             if (minBidPrice < 1 || minBidPrice > 100)
             {
-                handler->PSendSysMessage("The min bid price multiplier must be between 1 and 100");
+                handler->PSendSysMessage("最低出价倍率必须在 1 到 100 之间");
                 return false;
             }
 
@@ -435,7 +435,7 @@ public:
             }
             else
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions minbidprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                handler->PSendSysMessage("用法：ahbotoptions minbidprice $ahMapID（2、6 或 7）$color（grey/white/green/blue/purple/orange/yellow）$price");
                 return false;
             }
         }
@@ -446,7 +446,7 @@ public:
 
             if (!ahMapIdStr || !param1 || !param2)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions maxbidprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                handler->PSendSysMessage("用法：ahbotoptions maxbidprice $ahMapID（2、6 或 7）$color（grey/white/green/blue/purple/orange/yellow）$price");
                 return false;
             }
 
@@ -454,7 +454,7 @@ public:
 
             if (maxBidPrice < 1 || maxBidPrice > 100)
             {
-                handler->PSendSysMessage("The max bid price multiplier must be between 1 and 100");
+                handler->PSendSysMessage("最高出价倍率必须在 1 到 100 之间");
                 return false;
             }
 
@@ -469,7 +469,7 @@ public:
             }
             else
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions max bidprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $price");
+                handler->PSendSysMessage("用法：ahbotoptions maxbidprice $ahMapID（2、6 或 7）$color（grey/white/green/blue/purple/orange/yellow）$price");
                 return false;
             }
         }
@@ -480,7 +480,7 @@ public:
 
             if (!ahMapIdStr || !param1 || !param2)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions maxstack $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $value");
+                handler->PSendSysMessage("用法：ahbotoptions maxstack $ahMapID（2、6 或 7）$color（grey/white/green/blue/purple/orange/yellow）$value");
                 return false;
             }
 
@@ -502,7 +502,7 @@ public:
             }
             else
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions maxstack $ahMapID (2, 6 or 7) $color (grey, white, green, blue, purple, orange or yellow) $value");
+                handler->PSendSysMessage("用法：ahbotoptions maxstack $ahMapID（2、6 或 7）$color（grey/white/green/blue/purple/orange/yellow）$value");
                 return false;
             }
         }
@@ -513,7 +513,7 @@ public:
 
             if (!ahMapIdStr || !param1 || !param2)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions buyerprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue or purple) $price");
+                handler->PSendSysMessage("用法：ahbotoptions buyerprice $ahMapID（2、6 或 7）$color（grey/white/green/blue/purple）$price");
                 return false;
             }
 
@@ -528,7 +528,7 @@ public:
             }
             else
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions buyerprice $ahMapID (2, 6 or 7) $color (grey, white, green, blue or purple) $price");
+                handler->PSendSysMessage("用法：ahbotoptions buyerprice $ahMapID（2、6 或 7）$color（grey/white/green/blue/purple）$price");
                 return false;
             }
         }
@@ -538,7 +538,7 @@ public:
 
             if (!ahMapIdStr || !param1)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions bidinterval $ahMapID (2, 6 or 7) $interval(in minutes)");
+                handler->PSendSysMessage("用法：ahbotoptions bidinterval $ahMapID（2、6 或 7）$interval（分钟）");
                 return false;
             }
 
@@ -553,7 +553,7 @@ public:
 
             if (!ahMapIdStr || !param1)
             {
-                handler->PSendSysMessage("Syntax is: ahbotoptions bidsperinterval $ahMapID (2, 6 or 7) $bids");
+                handler->PSendSysMessage("用法：ahbotoptions bidsperinterval $ahMapID（2、6 或 7）$bids");
                 return false;
             }
 
@@ -564,12 +564,12 @@ public:
         }
         else
         {
-            handler->PSendSysMessage("Invalid syntax");
-            handler->PSendSysMessage("Try ahbotoptions help to see a list of options.");
+            handler->PSendSysMessage("语法错误");
+            handler->PSendSysMessage("输入 ahbotoptions help 查看选项列表。");
             return false;
         }
 
-        handler->PSendSysMessage("Done");
+        handler->PSendSysMessage("完成");
         return true;
     }
 };

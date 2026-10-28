@@ -1,0 +1,9 @@
+﻿## Interface: 30300
+## Title: LFGForwarder
+## Title-zhCN: [界面] |cff69ccf0聊天频道|r LFGForwarder
+## Notes-zhCN:  开启机器人聊天频道。
+## Version: 0.1
+
+LFGForwarder.lua
+
+

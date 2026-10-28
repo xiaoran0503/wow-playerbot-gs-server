@@ -1,0 +1,12 @@
+﻿## Interface: 30300
+## Author: Apollyon, Bunny
+## Version: 1.09
+## Title:  EUI |cff1784d1好友列表增强|r Enhanced FriendsList
+## Notes: |cff1784d1E|r|cffe5e3e3lvUI|r 好友列表增强
+## SavedVariables: EnhancedFriendsListDB
+## RequiredDeps: ElvUI
+
+Locales\Load_Locales.xml
+Settings\Load_Settings.xml
+ElvUI_EnhancedFriendsList.lua
+Config\Load_Config.xml

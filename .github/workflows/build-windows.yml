@@ -1,0 +1,229 @@
+name: windows-build-package
+
+# ============================================================================
+# 任务 6：Windows 版服务端打包（与 build.yml 的 Linux 镜像版并行存在、互不影响）
+#
+# 触发：
+#   push main          —— 推送到主干自动编译并产出 Windows zip artifact
+#   workflow_dispatch  —— 手动触发（仓库 Actions 页面点 "Run workflow"）
+#
+# 产出：wow-windows-<UTC日期>-<git-sha8>.zip
+#   内含 worldserver.exe / authserver.exe / 地图提取工具 / 运行时 DLL /
+#   configs\ 下的中文注释版 .conf.dist / README-windows.txt
+#
+# 依赖方案（沿用本仓库 .github/workflows/windows_build.yml 已验证配方）：
+#   windows-latest 镜像自带：CMake、Visual Studio 2022 (MSVC)、OpenSSL
+#   额外安装：Boost 1.87.0 预编译二进制 -> C:\local\boost_1_87_0 (BOOST_ROOT)
+#             MySQL 8.4.9 客户端         -> C:\tools\mysql\current
+#   不用 vcpkg / chocolatey：上游 CI 注释明确记录这两者在 GitHub Windows
+#   runner 上反复坏掉（VS 检测失败、安装源下架），直下官方包最稳。
+# ============================================================================
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  # 同一 ref 的旧跑没跑完就被新推送顶掉，省 Actions 时长
+  group: windows-build-package-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    env:
+      # Boost 预编译包解压位置，同时也是 cmake 的 BOOST_ROOT
+      BOOST_ROOT: C:\local\boost_1_87_0
+
+    steps:
+      # 必须 fetch-depth: 0（完整历史）：core 的 genrev 要从 git 提交历史生成
+      # 版本信息，浅克隆会导致 genrev 报错或版本号为空（与 build.yml 同因）。
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 缓存 Boost 解压目录 + MySQL 客户端目录（合计约 350 MB），
+      # 下次跑直接命中缓存，跳过下载与安装。
+      - name: Cache Boost & MySQL client
+        uses: actions/cache@v4
+        with:
+          path: |
+            C:\local\boost_1_87_0
+            C:\tools\mysql\current
+          key: winpkg-deps:boost-1.87.0:mysql-8.4.9
+
+      # ---- 装依赖：Boost + MySQL 客户端（OpenSSL 直接用镜像自带的）----
+      - name: Install Boost & MySQL client
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          # --- Boost 1.87.0 (msvc-14.3, 64bit) 预编译二进制 ---
+          if (-not (Test-Path 'C:\local\boost_1_87_0\boost\version.hpp'))
+          {
+              $boostExe = Join-Path $env:RUNNER_TEMP 'boost.exe'
+              # 走 downloads.sourceforge.net 拿 https 镜像；
+              # 必须发非浏览器 UA，否则 SourceForge 返回 HTML 下载页而不是文件。
+              $boostUrl = 'https://downloads.sourceforge.net/project/boost/boost-binaries/1.87.0/boost_1_87_0-msvc-14.3-64.exe'
+              for ($attempt = 1; $attempt -le 3; $attempt++)
+              {
+                  try
+                  {
+                      Invoke-WebRequest -Uri $boostUrl -OutFile $boostExe -UserAgent 'azerothcore-ci' `
+                          -ConnectionTimeoutSeconds 60 -OperationTimeoutSeconds 60
+                      # 镜像可能 200 返回错误页，按文件大小兜底（>50MB 才像真包）
+                      $boostMB = (Get-Item $boostExe).Length / 1MB
+                      if ($boostMB -lt 50) { throw "got $([int]$boostMB) MB, likely an HTML page." }
+                      break
+                  }
+                  catch
+                  {
+                      Write-Host "Boost download attempt $attempt failed: $($_.Exception.Message)"
+                      if ($attempt -eq 3) { throw }
+                      Start-Sleep -Seconds 15
+                  }
+              }
+              Write-Host ("Boost installer: {0:N1} MB" -f $boostMB)
+              $p = Start-Process -FilePath $boostExe -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/DIR=C:\local\boost_1_87_0' -Wait -PassThru
+              if ($p.ExitCode -ne 0) { throw "Boost installer exit code $($p.ExitCode)." }
+              if (-not (Test-Path 'C:\local\boost_1_87_0\lib64-msvc-14.3')) { throw 'Boost prebuilt libs missing.' }
+          }
+
+          # --- MySQL 8.4.9 客户端头文件+导入库（只链接用，不装 MySQL 服务端）---
+          if (-not (Test-Path 'C:\tools\mysql\current\lib\mysqlclient.lib'))
+          {
+              # archives CDN 保留所有历史版本；dev.mysql.com/get 只给当前 GA。
+              # Oracle 要求浏览器 UA，否则返回 HTML 错误页（与 boost 正好相反）。
+              $mysqlZip = Join-Path $env:RUNNER_TEMP 'mysql.zip'
+              Invoke-WebRequest -Uri 'https://cdn.mysql.com/archives/mysql-8.4/mysql-8.4.9-winx64.zip' `
+                  -OutFile $mysqlZip -UserAgent 'Mozilla/5.0'
+              $mysqlMB = (Get-Item $mysqlZip).Length / 1MB
+              Write-Host ("MySQL zip: {0:N1} MB" -f $mysqlMB)
+              if ($mysqlMB -lt 50) { throw "MySQL zip looks wrong ($([int]$mysqlMB) MB)." }
+              New-Item -ItemType Directory -Force -Path 'C:\tools\mysql' | Out-Null
+              Expand-Archive -Path $mysqlZip -DestinationPath 'C:\tools\mysql' -Force
+              if (Test-Path 'C:\tools\mysql\current') { Remove-Item -Recurse -Force 'C:\tools\mysql\current' }
+              Rename-Item 'C:\tools\mysql\mysql-8.4.9-winx64' 'C:\tools\mysql\current'
+              if (-not (Test-Path 'C:\tools\mysql\current\lib\mysqlclient.lib')) { throw 'mysqlclient.lib missing.' }
+          }
+
+          # --- OpenSSL：用镜像自带的，探测根目录并写进 GITHUB_ENV 供后续步骤用 ---
+          $opensslRoot = @($env:OPENSSL_ROOT_DIR, 'C:\Program Files\OpenSSL', 'C:\Program Files\OpenSSL-Win64') |
+              Where-Object { $_ -and (Test-Path (Join-Path $_ 'include\openssl\opensslv.h')) } |
+              Select-Object -First 1
+          if (-not $opensslRoot) { throw 'No OpenSSL dev install found on runner image.' }
+          "OPENSSL_ROOT_DIR=$opensslRoot" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          Write-Host "Using OpenSSL at $opensslRoot"
+
+      # ---- CMake 配置（参数与 apps/compiler/includes/functions.sh 的 Windows 分支一致）----
+      #   MYSQL_INCLUDE_DIR/LIBRARY = functions.sh 在 msys 分支硬编码的两个变量
+      #   SCRIPTS/MODULES=static    = 官方默认，内置脚本与 modules/ 下 19 个模块静态编入
+      #   TOOLS_BUILD=all            = 全部提取工具一起编（包内 tools\ 给用户用）
+      - name: CMake configure
+        shell: pwsh
+        run: |
+          cmake -S . -B build -G "Visual Studio 17 2022" -A x64 `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DMYSQL_INCLUDE_DIR=C:/tools/mysql/current/include `
+            -DMYSQL_LIBRARY=C:/tools/mysql/current/lib/mysqlclient.lib `
+            -DSCRIPTS=static `
+            -DMODULES=static `
+            -DTOOLS_BUILD=all `
+            -DBUILD_TESTING=OFF
+
+      # ---- 编译（Release 全量并行）----
+      - name: Build
+        shell: pwsh
+        run: cmake --build build --config Release -j
+
+      # ---- 打包：收集 exe / DLL / 中文配置模板 / 部署说明 ----
+      # 目录语义（已核对源码 src/common/Configuration/Config.cpp）：
+      #   Windows 端 core 写死从"工作目录\configs\"读 worldserver.conf / authserver.conf，
+      #   模块配置在 "工作目录\configs\modules\"。所以包内配置必须放 configs\ 下。
+      - name: Assemble package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $pkg = 'pkg/wow-server'
+          New-Item -ItemType Directory -Force -Path "$pkg/tools", "$pkg/configs/modules" | Out-Null
+
+          # 1) 主程序（VS 生成器下 exe 固定落在 build/bin/Release/）
+          Copy-Item build/bin/Release/worldserver.exe $pkg/
+          Copy-Item build/bin/Release/authserver.exe $pkg/
+
+          # 2) 地图提取工具（用户在客户端上跑一遍后把数据放进 data\）
+          foreach ($t in 'mapextractor','vmap4extractor','vmap4assembler','mmaps_generator') {
+            Copy-Item "build/bin/Release/$t.exe" "$pkg/tools/"
+          }
+
+          # 3) 运行时 DLL —— 缺一个都可能在用户机器上闪退：
+          #    - libmysql.dll        MySQL 客户端动态库
+          #    - libcrypto/libssl    OpenSSL 动态库（名字随版本带后缀，用通配）
+          #    - boost 动态库        filesystem / program_options / dll 等运行时依赖
+          Copy-Item 'C:\tools\mysql\current\lib\libmysql.dll' $pkg/
+          Get-ChildItem "$env:OPENSSL_ROOT_DIR/bin/libcrypto-*.dll", "$env:OPENSSL_ROOT_DIR/bin/libssl-*.dll" |
+            Copy-Item -Destination $pkg/
+          Copy-Item 'C:\local\boost_1_87_0\lib64-msvc-14.3\*.dll' $pkg/
+
+          # 4) 中文注释版配置模板：custom/conf-seed/etc 是开发好的种子，
+          #    改名为官方约定的 .conf.dist（用户首次运行前自行复制成 .conf）。
+          Copy-Item custom/conf-seed/etc/worldserver.conf "$pkg/configs/worldserver.conf.dist"
+          Copy-Item custom/conf-seed/etc/authserver.conf  "$pkg/configs/authserver.conf.dist"
+          Get-ChildItem custom/conf-seed/etc/modules/*.conf | ForEach-Object {
+            Copy-Item $_.FullName (Join-Path "$pkg/configs/modules" ($_.BaseName + '.conf.dist'))
+          }
+
+          # 5) 包内部署说明（随包走，用户解压即见）
+          #    注意：here-string 正文必须与上面的 PowerShell 代码同缩进，
+          #    否则 YAML 块标量会在顶格行处提前结束。
+          @'
+          ============================================
+            AzerothCore Playerbot 服务端 Windows 版
+            构建：见文件名日期-Commit
+          ============================================
+
+          【目录】
+            worldserver.exe / authserver.exe   主程序（勿与同目录 DLL 分开）
+            tools\      地图提取工具（准备数据时用一次）
+            configs\    中文注释版配置模板（.conf.dist）
+            本 zip 不含游戏数据(dbc/maps/vmaps/mmaps)和数据库，需自备。
+
+          【首次部署】
+           1) 先装 VC++ 2015-2022 Redistributable (x64)（启动报缺 dll 时）。
+           2) 准备 MySQL 8.x 数据库：建 acore_auth / acore_world / acore_characters，
+              导入仓库 sql/ 结构（可复用 Linux 镜像版的 db-import）。
+           3) 配置：把 configs\ 里所有 .conf.dist 复制一份改名为 .conf（去掉 .dist），
+              configs\modules\ 下同理。Windows 版固定从 工作目录\configs\ 读配置。
+              然后按实际改：数据库连接串（LoginDatabaseInfo 等）、外网 IP、DataDir。
+           4) 数据：把 3.3.5a 客户端 Data 用 tools\ 里的提取器跑一遍，产物放进
+              服务端旁的 data\ 目录，worldserver.conf 里 DataDir = "./data"。
+           5) 启动顺序：先 authserver.exe，再 worldserver.exe。
+
+          【端口】
+            官方默认 authserver 3724 / worldserver 8085；
+            本项目部署约定 20241 / 20242，需在 configs\*.conf 与数据库 realmlist
+            表里同步改一致。
+          '@ | Out-File -FilePath "$pkg/README-windows.txt" -Encoding utf8
+
+      # ---- 算 tag：UTC日期-Commit短sha8（与 build.yml 同规则），用于 zip 名 ----
+      - name: Compute tag
+        id: tag
+        shell: pwsh
+        run: |
+          $t = (Get-Date).ToUniversalTime().ToString('yyyyMMdd') + '-' + $env:GITHUB_SHA.Substring(0,8)
+          "value=$t" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      # ---- 打 zip 并上传 artifact ----
+      - name: Zip & upload artifact
+        shell: pwsh
+        run: Compress-Archive -Path pkg/wow-server -DestinationPath "wow-windows-${{ steps.tag.outputs.value }}.zip"
+      - name: Upload Windows package
+        uses: actions/upload-artifact@v4
+        with:
+          name: wow-windows
+          path: wow-windows-*.zip
+          if-no-files-found: error
