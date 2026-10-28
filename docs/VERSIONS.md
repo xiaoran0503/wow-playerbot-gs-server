@@ -28,28 +28,35 @@
 | mod-transmog | https://github.com/azerothcore/mod-transmog.git | master | `327753a05b9024f2a90738bb08e9b8afc2fc9a21` | 无（旧式 include.sh 结构） |
 | mod-random-enchants | https://github.com/azerothcore/mod-random-enchants.git | master | `6d49d64918f1e798490d0139038a33194fd294df` | 无（旧式 include.sh 结构） |
 | mod-boss-announcer | https://github.com/azerothcore/mod-boss-announcer.git | master | `3af6e83e976a9a143ded51f4e8afeb69863fb5ec` | 无（旧式 include.sh 结构） |
+| mod-playerbots | https://github.com/mod-playerbots/mod-playerbots.git | master | `e88cc4099e69f35126b28942a412ca702d20453b` | 无（`mod-playerbots.cmake` + include.sh） |
 
-> 注意：除 mod-ale 外，其余 4 个模块的上游 master 根目录未提供 `CMakeLists.txt`，
-> 为旧式 `include.sh` + `src/` 结构（已通过 GitHub API 核对上游 master 根目录确认，非本地缺失）。
+> 注意：除 mod-ale 外，其余模块的上游 master 根目录均未提供 `CMakeLists.txt`，
+> 为旧式 `include.sh`（或 `.cmake`）+ `src/` 结构（已通过 GitHub API 核对上游 master 根目录确认，非本地缺失）。
 > 集成阶段若 CMake 模块加载器要求 `modules/<名>/CMakeLists.txt`，需由集成阶段补齐 shim。
 
-## 3. Playerbots 集成位置（重要）
+## 3. Playerbots 集成位置（已 vendor）
 
-经在本快照树内核查：**Playerbot 分支核心树本身并未内建 playerbots 模块源码**。
+经核查：**Playerbot 分支核心树本身并未内建 playerbots 模块源码**——
+`src/server/scripts/` 下无 playerbots 目录、`src/server/` 下无任何 `*playerbot*` 目录、
+核心 `data/sql/` 下无 playerbots 相关目录；全树仅 `.github/workflows/core-build-playerbots.yml` 一处引用 playerbot。
+该 CI 工作流（第 42–48 行）显示：构建时把**独立仓库** `mod-playerbots/mod-playerbots`（Playerbot 分支对应其 `master`）检出到 `modules/mod-playerbots`。
 
-- `src/server/scripts/` 下**没有** `playerbots` 目录；`src/server/` 下无任何 `*playerbot*` 目录。
-- `data/sql/` 下**没有** playerbots 相关目录。
-- 全树仅 `.github/workflows/core-build-playerbots.yml` 一处引用 playerbot。
-- 该 CI 工作流（第 42–48 行）显示：构建时会把**独立仓库** `mod-playerbots/mod-playerbots`
-  （Playerbot 分支对应其 `master` 分支）额外检出到 `modules/mod-playerbots`。
+现已将该模块 vendor 进 `modules/mod-playerbots`（HEAD `e88cc4099e69f35126b28942a412ca702d20453b`，2026-10-22），与 Playerbot 分支配套使用。
 
-结论：playerbots 并非分支内建，而是以独立模块形式存在于
-`https://github.com/mod-playerbots/mod-playerbots`（目标路径 `modules/mod-playerbots`）。
-本快照未 vendor 该模块（不在本次 5 模块清单内），由后续阶段按需补入。
+**配置模板与键命名（已核实）**：
+- 模板路径：`modules/mod-playerbots/conf/playerbots.conf.dist`
+- 键命名风格：**`Playerbots.*`**（不是 `AiPlayerbot.*`）。示例键：
+  `Playerbots.Enabled`、`Playerbots.MinRandomBots`、`Playerbots.MaxRandomBots`、
+  `Playerbots.RandomBotAccountPrefix`、`Playerbots.MaxAddedBots` 等，模板内共约 891 个 `Playerbots.*` 键。
 
-配置模板与键命名：本快照核心树的 `conf/dist/` 下**不存在** playerbot 配置模板，
-也检索不到 `AiPlayerbot.*` 键——这些由独立的 `mod-playerbots` 模块自身提供（该模块未在本树内，未核实到具体文件路径）。
-后续汉化配置迁移时，需先 vendor `mod-playerbots` 后再定位其 conf 模板与键命名风格。
+**模块自带 SQL 结构**（`modules/mod-playerbots/data/sql/`）：
+```
+data/sql/
+├── characters/   base/(3)  updates/(6)
+├── playerbots/   base/(29) updates/(37)  + archive/ create/ custom/
+└── world/        base/(1)  updates/(1)
+```
+即 playerbot 专用库为 `acore_playerbots`（对应 `data/sql/playerbots/`），另对 characters/world 库有补丁脚本。
 
 ## 4. SQL 更新目录结构
 

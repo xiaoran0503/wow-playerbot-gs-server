@@ -146,6 +146,7 @@ compile_commands.json
 !modules/mod-transmog/
 !modules/mod-random-enchants/
 !modules/mod-boss-announcer/
+!modules/mod-playerbots/
 
 # ==================
 #  LOCAL / BUILD / RUNTIME IGNORES (this repo)
