@@ -23,8 +23,9 @@ bool SetsOverlap(std::unordered_set<uint32> const& left, std::unordered_set<uint
     if (left.empty() || right.empty())
         return false;
 
-    auto const& small = left.size() <= right.size() ? left : right;
-    auto const& big = left.size() <= right.size() ? right : left;
+    // MSVC cannot deduce auto const& from a conditional expression; use explicit type.
+    std::unordered_set<uint32> const& small = left.size() <= right.size() ? left : right;
+    std::unordered_set<uint32> const& big = left.size() <= right.size() ? right : left;
 
     for (uint32 value : small)
         if (big.count(value) != 0)

@@ -41,8 +41,8 @@ local HERITAGE = {
 -- 事件回调
 -- ----------------------------------------------------------------------------
 
--- 登录时施放出生被动光环
-local function ApplyHeritageAura(player)
+-- 登录时施放出生被动光环（ALE 回调签名：第一个参数为 event 号）
+local function ApplyHeritageAura(event, player)
     if not HERITAGE.enabled then
         return
     end
@@ -57,8 +57,8 @@ local function ApplyHeritageAura(player)
 end
 
 -- 升级时刷新（防止转职/洗点等场景丢失；等级本身不影响光环，这里保证始终挂着）
-local function OnLevelChange(player, oldLevel, newLevel)
-    ApplyHeritageAura(player)
+local function OnLevelChange(event, player, oldLevel)
+    ApplyHeritageAura(event, player)
 end
 
 -- 战斗等级乘算：handler(event, player, rating, value, isCombatRating, isPvpRating)
@@ -90,13 +90,14 @@ local function OnCalcDamageTaken(event, player, attacker, damage)
 end
 
 -- ----------------------------------------------------------------------------
--- 事件注册（数值为 Eluna/ALE 标准 PlayerEvents 常量）
---   3  = PLAYER_EVENT_ON_LOGIN
---   2  = PLAYER_EVENT_ON_LEVEL_CHANGE
---   27 = PLAYER_EVENT_ON_CALC_RATING
---   42 = PLAYER_EVENT_ON_CALC_DAMAGE_TAKEN
+-- 事件注册（ALE PlayerEvents 常量，见 mod-ale/src/LuaEngine/Hooks.h）
+--   3  = PLAYER_EVENT_ON_LOGIN        (event, player)
+--   2  = PLAYER_EVENT_ON_LEVEL_CHANGE (event, player, oldLevel)   [注意：ALE 事件 2 为 CHARACTER_DELETE，升级事件实为 13]
+--   13 = PLAYER_EVENT_ON_LEVEL_CHANGE (event, player, oldLevel)
+-- ----------------------------------------------------------------------------
+-- 说明：谷神原脚本按 Eluna 事件号注册 2(升级)/27(评级)/42(减伤)；mod-ale 的事件
+--       枚举与 Eluna 不同（2=角色删除、27=更新区域、42=命令），评级/减伤事件
+--       ALE 无等价实现，已移除；升级事件改用 ALE 的 13。
 -- ----------------------------------------------------------------------------
 RegisterPlayerEvent(3, ApplyHeritageAura)
-RegisterPlayerEvent(2, OnLevelChange)
-RegisterPlayerEvent(27, OnCalcRating)
-RegisterPlayerEvent(42, OnCalcDamageTaken)
+RegisterPlayerEvent(13, OnLevelChange)
