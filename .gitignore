@@ -163,9 +163,10 @@ temp/
 /data/datalyf/
 
 # ==================
-#  DELIVERABLES zips (large binary, keep local only; docs/md still tracked)
+#  DELIVERABLES (zips + addons source tree, keep local only; md docs still tracked)
 # ==================
 /deliverables/*.zip
+/deliverables/addons-pack/Interface/
 
 # ==================
 #  VENDORED MODULES wave2 (commit module trees into git)
