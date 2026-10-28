@@ -5,10 +5,11 @@
  * mechanism (its root CMakeLists.txt uses AC_ADD_SCRIPT / AC_ADD_SCRIPT_LOADER
  * "DungeonQuests", and src/loader.h only defines AddDungeonQuestsScripts()).
  *
- * This core auto-globs modules/*/src/ and expects an entry point literally
- * named Add<folder name, '-' -> '_'>Scripts() (see modules/CMakeLists.txt
- * -> ConfigureScriptLoader). For folder "mod-dungeon-quests" that symbol is
- * Addmod_dungeon_questsScripts(), which upstream never declares.
+ * This core auto-globs modules subdirectories (modules/<folder>/src/) and
+ * expects an entry point literally named Add<folder name, '-' -> '_'>Scripts()
+ * (see modules/CMakeLists.txt -> ConfigureScriptLoader). For folder
+ * "mod-dungeon-quests" that symbol is Addmod_dungeon_questsScripts(), which
+ * upstream never declares.
  *
  * This translation unit is the missing wrapper: it includes the upstream
  * loader.h (which no other translation unit includes) and forwards to the
