@@ -14,10 +14,15 @@ BEGIN
     END;
 
     START TRANSACTION;
+    -- Collision guard keys off ScriptName only: ScriptName is a C++ script binding
+    -- name that is never localized, whereas `name` varies by DB language (upstream
+    -- English "Dungeon Quest Guide", zhCN localized, or other translations). Comparing
+    -- `name` here made re-import against an already-localized world DB fail with
+    -- ERROR 1644. Abort only when entry 14999991 already belongs to a different
+    -- scripted or unscripted creature; a row already owned by this module (under any
+    -- NPC name language) passes through to the idempotent ON DUPLICATE KEY UPDATE.
     IF EXISTS (SELECT 1 FROM `creature_template` WHERE `entry` = 14999991
-        AND (BINARY `name` <> '地下城任务向导'
-            OR BINARY `ScriptName` <> 'npc_dungeon_quest_guide'
-            OR `name` IS NULL OR `ScriptName` IS NULL)) THEN
+        AND (`ScriptName` IS NULL OR BINARY `ScriptName` <> 'npc_dungeon_quest_guide')) THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'mod-dungeon-quests: entry 14999991 collision; no guide data changed';
     END IF;
