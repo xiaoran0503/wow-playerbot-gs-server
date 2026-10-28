@@ -18,6 +18,9 @@ on:
 #   DOCKERHUB_TOKEN     —— Docker Hub 访问令牌（Access Token，不是登录密码）
 env:
   IMAGE_BASE: docker.io/${{ secrets.DOCKERHUB_USERNAME }}
+  # GitHub Actions 限制：`if:` 条件不能直接引用 secrets 上下文，
+  # 故在 env（允许 secrets）里先求值，供步骤 if/bash 使用。
+  HAS_DOCKERHUB: ${{ secrets.DOCKERHUB_USERNAME != '' }}
 
 jobs:
   build:
@@ -39,7 +42,7 @@ jobs:
       # 登录 Docker Hub；凭据来自上面两个 Secret。
       # 未配置 DOCKERHUB_* secrets 时跳过（改走"导出 tar artifact"分支），不让 CI 卡死在登录。
       - name: Log in to Docker Hub
-        if: ${{ secrets.DOCKERHUB_USERNAME != '' }}
+        if: env.HAS_DOCKERHUB == 'true'
         uses: docker/login-action@v3
         with:
           registry: docker.io
@@ -67,7 +70,7 @@ jobs:
         run: |
           set -euxo pipefail
           TAG="${{ steps.tag.outputs.value }}"
-          if [ -n "${{ secrets.DOCKERHUB_USERNAME }}" ]; then
+          if [ "$HAS_DOCKERHUB" == "true" ]; then
             for target in authserver worldserver db-import; do
               docker buildx build \
                 --push \
@@ -95,7 +98,7 @@ jobs:
 
       # 无 DOCKERHUB secrets 时的镜像 tar 导出（有 secrets 时本步不产出，跳过）
       - name: Upload exported image tars (no-secrets fallback)
-        if: ${{ secrets.DOCKERHUB_USERNAME == '' }}
+        if: env.HAS_DOCKERHUB != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: wow-images-tar
@@ -111,7 +114,7 @@ jobs:
             echo "# built at $(date -u --iso-8601=seconds)"
             echo "sha=${GITHUB_SHA}"
             echo "tag=${{ steps.tag.outputs.value }}"
-            if [ -n "${{ secrets.DOCKERHUB_USERNAME }}" ]; then
+            if [ "$HAS_DOCKERHUB" == "true" ]; then
               echo "mode=push-dockerhub"
               for target in authserver worldserver db-import; do
                 echo "${IMAGE_BASE}/wow-$target:${{ steps.tag.outputs.value }}"
