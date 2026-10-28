@@ -159,7 +159,9 @@ jobs:
           Copy-Item build/bin/Release/authserver.exe $pkg/
 
           # 2) 地图提取工具（用户在客户端上跑一遍后把数据放进 data\）
-          foreach ($t in 'mapextractor','vmap4extractor','vmap4assembler','mmaps_generator') {
+          #    目标 exe 名与 src/tools 子目录一致：map_extractor / vmap4_extractor /
+          #    vmap4_assembler / mmaps_generator（带下划线；旧脚本误用驼峰名导致打包失败）。
+          foreach ($t in 'map_extractor','vmap4_extractor','vmap4_assembler','mmaps_generator') {
             Copy-Item "build/bin/Release/$t.exe" "$pkg/tools/"
           }
 
@@ -170,7 +172,9 @@ jobs:
           Copy-Item 'C:\tools\mysql\current\lib\libmysql.dll' $pkg/
           Get-ChildItem "$env:OPENSSL_ROOT_DIR/bin/libcrypto-*.dll", "$env:OPENSSL_ROOT_DIR/bin/libssl-*.dll" |
             Copy-Item -Destination $pkg/
-          Copy-Item 'C:\local\boost_1_87_0\lib64-msvc-14.3\*.dll' $pkg/
+          # boost 常被静态链接（此时无 dll），通配零匹配不应中止打包。
+          Get-ChildItem 'C:\local\boost_1_87_0\lib64-msvc-14.3\*.dll' -ErrorAction SilentlyContinue |
+            Copy-Item -Destination $pkg/ -ErrorAction SilentlyContinue
 
           # 4) 中文注释版配置模板：custom/conf-seed/etc 是开发好的种子，
           #    改名为官方约定的 .conf.dist（用户首次运行前自行复制成 .conf）。

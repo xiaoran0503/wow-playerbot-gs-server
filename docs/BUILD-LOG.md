@@ -69,6 +69,21 @@
 - **真根因（上一轮"auto 三元推导"诊断错误）**：27 行第 39 列正是标识符 `small`。Windows SDK `<rpcndr.h>`（经 windows.h 拉入）里有 **`#define small char`**（MIDL base type，见 MS Developer Community 确认）。于是 `std::unordered_set<uint32> const& small = ...` 预处理后变成 `... const& char = ...` → C2062；紧随的 range-for `for (uint32 value : small)` 变成 `: char` → C2143/C2059 连锁。同一函数里的 `big`/`left`/`right` 不是宏故不报错，这也解释了为何仅 `small` 触发。Linux glibc 头文件无此宏，故 GCC 一直能过。
 - 修复动作（本轮 commit，见 git log）：把 `small`/`big` 两个局部变量改名为 `smallSet`/`bigSet`（注释同步更新为 rpcndr.h 宏说明）；全仓库 Grep `\bsmall\b` 确认其余命中均在注释/字符串中，无第二个真实标识符冲突。推送后重新触发 CI。
 
+### run 40746846224（windows-build-package，sha 8580f986）→ MSVC 全绿，打包步失败
+
+- **Build 步骤 success ✅**：MSVC 编译 + 链接全部通过（worldserver.exe / authserver.exe / dbimport.exe / 4 个地图工具 exe 均产出到 `build/bin/Release/`）。`smallSet/bigSet` 改名彻底解决 rpcndr.h 宏冲突，本轮无任何 C 错误。
+- 新失败点在 **Assemble package** 步：
+  ```
+  Copy-Item "build/bin/Release/$t.exe" "$pkg/tools/"
+  Cannot find path '...\build\bin\Release\mapextractor.exe' because it does not exist.
+  ```
+- 根因：workflow `build-windows.yml` 打包脚本里 4 个工具 exe 名写错（驼峰），与 AzerothCore 实际产物（`src/tools/` 子目录名，带下划线）不一致：
+  - 脚本 `mapextractor` → 实际 **`map_extractor.exe`**
+  - 脚本 `vmap4extractor` → 实际 **`vmap4_extractor.exe`**
+  - 脚本 `vmap4assembler` → 实际 **`vmap4_assembler.exe`**
+  - `mmaps_generator` 本就正确。
+- 修复动作（commit 见 git log）：foreach 列表改为 `map_extractor','vmap4_extractor','vmap4_assembler','mmaps_generator`；并给 boost dll 通配拷贝加 `-ErrorAction SilentlyContinue`（boost 常静态链接、无 dll 时零匹配不应中止打包）。worldserver/authserver/libmysql/openssl/conf-seed 路径均已核对存在。另：链接期有一条 LNK4006 警告（AddDungeonQuestsScripts 在 ModulesLoader 与 mod_dungeon_quests_loader 重复定义，second definition ignored），非致命，暂不处理。
+
 ### 2026-10-28 · 运行版 Docker 联调修复（与 CI 并行，基于容器日志证据）
 
 - **worldserver 反复重启（RestartCount≈27）的根因链**（全部在运行版容器内定位并修复）：
