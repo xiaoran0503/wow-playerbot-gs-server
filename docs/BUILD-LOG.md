@@ -56,7 +56,18 @@
   modules\mod-dungeon-quests\src\DungeonQuestMgr.cpp(29,30): error C2059: syntax error: ')'
   ```
   - `SetsOverlap()` 内 `auto const& small = left.size() <= right.size() ? left : right;` 用 **auto + 三元表达式**——Linux GCC 接受，**MSVC 对 `auto` 推导条件表达式引用性不兼容**，26 行推导失败导致 29 行 range-for 连锁报错。
-- 修复动作（commit 待记录）：DungeonQuestMgr.cpp 中该两行改为**显式类型** `std::unordered_set<uint32> const&`；并 Grep 全仓库 modules 确认其余 2 处同类 `auto const& ... ? :`（mod-playerbots TravelMgr.cpp:4398 / ICCActions_LK.cpp:3042）在本次 Windows 编译中未被报错，暂不动。推送后重新触发 CI。
+- 修复动作（commit d1e9ed3b）：DungeonQuestMgr.cpp 中该两行改为**显式类型** `std::unordered_set<uint32> const&`；并 Grep 全仓库 modules 确认其余 2 处同类 `auto const& ... ? :`（mod-playerbots TravelMgr.cpp:4398 / ICCActions_LK.cpp:3042）在本次 Windows 编译中未被报错，暂不动。推送后重新触发 CI。
+
+### run 40702002471（windows-build-package，sha d1e9ed3b）→ failure（真根因定位）
+
+- **d1e9ed3b 推送后 Windows 仍红**：拉该 run 的真实 job 日志（job 122863994672；注意上一组织者给的 job 122772776414 实际是 a4ea4ec8 旧 run 的 job，报错行号也对应旧文件），新报错行号整体后移 1 行（因加了注释行）：
+  ```
+  DungeonQuestMgr.cpp(27,39): error C2062: type 'char' unexpected
+  DungeonQuestMgr.cpp(30,23): error C2143: missing ';' before ':'
+  DungeonQuestMgr.cpp(30,30): error C2059: ')'
+  ```
+- **真根因（上一轮"auto 三元推导"诊断错误）**：27 行第 39 列正是标识符 `small`。Windows SDK `<rpcndr.h>`（经 windows.h 拉入）里有 **`#define small char`**（MIDL base type，见 MS Developer Community 确认）。于是 `std::unordered_set<uint32> const& small = ...` 预处理后变成 `... const& char = ...` → C2062；紧随的 range-for `for (uint32 value : small)` 变成 `: char` → C2143/C2059 连锁。同一函数里的 `big`/`left`/`right` 不是宏故不报错，这也解释了为何仅 `small` 触发。Linux glibc 头文件无此宏，故 GCC 一直能过。
+- 修复动作（本轮 commit，见 git log）：把 `small`/`big` 两个局部变量改名为 `smallSet`/`bigSet`（注释同步更新为 rpcndr.h 宏说明）；全仓库 Grep `\bsmall\b` 确认其余命中均在注释/字符串中，无第二个真实标识符冲突。推送后重新触发 CI。
 
 ### 2026-10-28 · 运行版 Docker 联调修复（与 CI 并行，基于容器日志证据）
 

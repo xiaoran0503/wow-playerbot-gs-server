@@ -23,12 +23,13 @@ bool SetsOverlap(std::unordered_set<uint32> const& left, std::unordered_set<uint
     if (left.empty() || right.empty())
         return false;
 
-    // MSVC cannot deduce auto const& from a conditional expression; use explicit type.
-    std::unordered_set<uint32> const& small = left.size() <= right.size() ? left : right;
-    std::unordered_set<uint32> const& big = left.size() <= right.size() ? right : left;
+    // rpcndr.h (pulled in via windows.h on Windows) does `#define small char`,
+    // so `small`/`big` cannot be used as identifiers in this TU. Use smallSet/bigSet.
+    std::unordered_set<uint32> const& smallSet = left.size() <= right.size() ? left : right;
+    std::unordered_set<uint32> const& bigSet = left.size() <= right.size() ? right : left;
 
-    for (uint32 value : small)
-        if (big.count(value) != 0)
+    for (uint32 value : smallSet)
+        if (bigSet.count(value) != 0)
             return true;
 
     return false;
