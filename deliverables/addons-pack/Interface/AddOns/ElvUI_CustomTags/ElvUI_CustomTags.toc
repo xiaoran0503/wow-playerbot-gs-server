@@ -1,9 +1,0 @@
-## Interface: 30300
-## Author: Blazeflack
-## Version: 1.03
-## Title: EUI |cff1784d1自定义标签|r Custom Tags
-## Notes: 用户的自定义框架标签的集合。
-## RequiredDeps: ElvUI
-## DefaultState: enabled
-
-core.lua

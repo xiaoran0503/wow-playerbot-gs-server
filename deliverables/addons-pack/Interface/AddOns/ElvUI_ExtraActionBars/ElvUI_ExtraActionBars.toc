@@ -1,9 +1,0 @@
-## Interface: 30300
-## Author: Blazeflack
-## Version: 1.00
-## Title: EUI |cff1784d1新增动作条|r Extra Action Bars
-## Notes: ElvUI增加4个额外的动作条。
-## RequiredDeps: ElvUI
-
-config.lua
-core.lua

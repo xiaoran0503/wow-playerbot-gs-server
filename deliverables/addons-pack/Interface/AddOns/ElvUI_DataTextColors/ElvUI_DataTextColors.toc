@@ -1,9 +1,0 @@
-﻿## Interface: 30300
-## Author: Benik
-## Version: 1.14
-## Title:  EUI |cff1784d1文本颜色编辑|r DataText Colors
-## Notes: 一个ElvUI插件，它可以改变DataText文本的颜色。
-## RequiredDeps: ElvUI
-## DefaultState: Enabled
-
-core.lua
