@@ -123,10 +123,13 @@ jobs:
       #   MYSQL_INCLUDE_DIR/LIBRARY = functions.sh 在 msys 分支硬编码的两个变量
       #   SCRIPTS/MODULES=static    = 官方默认，内置脚本与 modules/ 下 19 个模块静态编入
       #   TOOLS_BUILD=all            = 全部提取工具一起编（包内 tools\ 给用户用）
+      #   注意：不显式 -G "Visual Studio ..."，让 CMake 在 runner 上自动探测 VS 生成器
+      #   （显式 -G 在部分 windows-latest 镜像上报 "could not find any instance of Visual Studio"；
+      #    上游 acore.sh compiler 同样不指定 -G，走自动探测。）
       - name: CMake configure
         shell: pwsh
         run: |
-          cmake -S . -B build -G "Visual Studio 17 2022" -A x64 `
+          cmake -S . -B build -A x64 `
             -DCMAKE_BUILD_TYPE=Release `
             -DMYSQL_INCLUDE_DIR=C:/tools/mysql/current/include `
             -DMYSQL_LIBRARY=C:/tools/mysql/current/lib/mysqlclient.lib `

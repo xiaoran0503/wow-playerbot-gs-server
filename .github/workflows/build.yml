@@ -36,8 +36,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 登录 Docker Hub；凭据来自上面两个 Secret
+      # 登录 Docker Hub；凭据来自上面两个 Secret。
+      # 未配置 DOCKERHUB_* secrets 时跳过（改走"导出 tar artifact"分支），不让 CI 卡死在登录。
       - name: Log in to Docker Hub
+        if: ${{ secrets.DOCKERHUB_USERNAME != '' }}
         uses: docker/login-action@v3
         with:
           registry: docker.io
@@ -56,25 +58,51 @@ jobs:
       #   → authserver / worldserver / db-import
       # cache gha 双向：cache-from 读上次构建缓存，cache-to mode=max 写回 Actions 缓存，
       # 大幅加速重复编译（模块很少全量重编）。
-      # 每个目标打两个 tag：本次日期-sha8 + latest。
+      # 模式分流：
+      #   已配 DOCKERHUB secrets → --push 直推 Docker Hub，打 日期-sha8 + latest 双 tag；
+      #   未配 secrets → 构建镜像并导出为 images/wow-<target>-<tag>.tar 上传 artifact
+      #   （本机 docker load 即可用），镜像不丢失，只是暂不发布到 Docker Hub。
       - name: Build & push (authserver / worldserver / db-import)
         shell: bash
         run: |
           set -euxo pipefail
           TAG="${{ steps.tag.outputs.value }}"
-          for target in authserver worldserver db-import; do
-            docker buildx build \
-              --push \
-              --target "$target" \
-              -f docker/Dockerfile \
-              -t "$IMAGE_BASE/wow-$target:$TAG" \
-              -t "$IMAGE_BASE/wow-$target:latest" \
-              --cache-from type=gha \
-              --cache-to type=gha,mode=max \
-              .
-          done
+          if [ -n "${{ secrets.DOCKERHUB_USERNAME }}" ]; then
+            for target in authserver worldserver db-import; do
+              docker buildx build \
+                --push \
+                --target "$target" \
+                -f docker/Dockerfile \
+                -t "$IMAGE_BASE/wow-$target:$TAG" \
+                -t "$IMAGE_BASE/wow-$target:latest" \
+                --cache-from type=gha \
+                --cache-to type=gha,mode=max \
+                .
+            done
+          else
+            mkdir -p images
+            for target in authserver worldserver db-import; do
+              docker buildx build \
+                --target "$target" \
+                -f docker/Dockerfile \
+                -t "local/wow-$target:$TAG" \
+                --cache-from type=gha \
+                --cache-to type=gha,mode=max \
+                --output type=docker,dest="images/wow-$target-$TAG.tar" \
+                .
+            done
+          fi
 
-      # 审计用：把本次推送的镜像清单写成文件并上传为 artifact，
+      # 无 DOCKERHUB secrets 时的镜像 tar 导出（有 secrets 时本步不产出，跳过）
+      - name: Upload exported image tars (no-secrets fallback)
+        if: ${{ secrets.DOCKERHUB_USERNAME == '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: wow-images-tar
+          path: images/*.tar
+          if-no-files-found: error
+
+      # 审计用：把本次构建的镜像清单写成文件并上传为 artifact，
       # 方便本机 wslc-mirror 部署时核对该拉哪个 tag。
       - name: Write image manifest
         shell: bash
@@ -83,9 +111,17 @@ jobs:
             echo "# built at $(date -u --iso-8601=seconds)"
             echo "sha=${GITHUB_SHA}"
             echo "tag=${{ steps.tag.outputs.value }}"
-            for target in authserver worldserver db-import; do
-              echo "${IMAGE_BASE}/wow-$target:${{ steps.tag.outputs.value }}"
-            done
+            if [ -n "${{ secrets.DOCKERHUB_USERNAME }}" ]; then
+              echo "mode=push-dockerhub"
+              for target in authserver worldserver db-import; do
+                echo "${IMAGE_BASE}/wow-$target:${{ steps.tag.outputs.value }}"
+              done
+            else
+              echo "mode=export-tar (DOCKERHUB secrets not configured; artifacts: wow-images-tar)"
+              for target in authserver worldserver db-import; do
+                echo "images/wow-$target-${{ steps.tag.outputs.value }}.tar"
+              done
+            fi
           } > image-manifest.txt
 
       - name: Upload image manifest artifact
