@@ -43,6 +43,26 @@ Immersion（任务剧情对话增强；如需简洁任务日志可在插件列�
 
 ---
 
+## 三-b、合并补充（2026-10-29）
+
+从 **逍遥335高清客户端** `Interface\AddOns` 并入 26 个无重复插件（补 Atlas 战场/交通图、大脚基础库及单位框架、自动修理/贩卖、聊天增强等），与上文 A-D 组共同构成最终集合。并入清单：
+
+Atlas_Battlegrounds、Atlas_Transportation、BigFoot（基础库）、BigFootBar、BFClassMods、BFGadgets、BFGoldFrame、BFMount、BFTooltip、BuffMaster、BUnitFrame、BubbleChat、ChannelFilter、ChatEnhance、InfoBox、ItemInfo、MerInspect、MobHealth、MyFocusFrame、PackUpInventory、PlayerLink、PorEnhance、RepairHelper、ScreenMark、SellerHelper、SexyMap
+
+**未并入（重复/无用，客户端独有项 65 个中剔除 39 个）**：Combuctor×3、dct×4、Recount、EventAlert、oRA2×4、BFCastingBar、CombatIndicator、TUnitFrame、BFTargetFrame、MapPlus、ezIcons、BigFootChat、BigFootMark、BFCooldown、BFQuest、RaidAlerter、PartyAssist、SpellTimer、QuickCompare、AutoEquip、MailMod、QuestInfo、Gladius、SpellHelper、GDKP、MiDKP、BigFootBot、Thumbnail（图片非插件）、Blizzard_VehicleUI（官方内置）。
+
+> 说明：现有包原 126 第三方 + 并入 26 = **152 个第三方插件**（另有 23 个 Blizzard_* 调试符号目录，不参与加载）。
+
+## 三-c、汉化核查结论（2026-10-29）
+
+对并入的 26 个插件做了**逐文件编码级扫描**（UTF-8/GBK 双解码 + 排除第三方 Libs 库 + 排除代码标识符/材质路径/事件名后的真实显示文本清点），结论：
+
+- **21 个为大脚/逍遥中文整合版**：主 Lua/XML 界面文本直接为中文（BigFoot 库、BUnitFrame、MerInspect、SellerHelper、RepairHelper 等）。
+- **SexyMap、Atlas_Battlegrounds、Atlas_Transportation**：自带官方 `localization\zhCN.lua`，通过 AceLocale 机制在中文客户端（GetLocale()=="zhCN"）**自动加载中文**，无需处理。
+- **BubbleChat、ChatEnhance、PorEnhance**：无用户可见英文文本（混淆代码/纯功能插件，字符串均为材质路径、事件名、帧名标识符）。
+- **MobHealth**：唯一真实显示缺口——血量数字缩写 `"%dW"` 已汉化为 `"%d万"`（按原 GBK 编码写回，Lua 语法校验 PASS）。
+- 结论：**无需其他人工汉化**，中文客户端下全部界面中文、无乱码风险。
+
 ## 四、特别标注
 
 - **MapTeleport（地图传送）**：需要 **GM 账号权限**，且**不支持副本传送**（仅主城/大陆定点，Alt+左键传送）。普通玩家/正式游玩时建议在插件列表手动禁用。
