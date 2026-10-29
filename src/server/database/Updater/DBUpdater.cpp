@@ -286,7 +286,8 @@ bool UpdateDatabase(DatabaseUpdatePool& pool, DBUpdaterInfo const& info, std::st
 
     Path const sourceDirectory(info.sourceDirectory);
 
-    if (!is_directory(sourceDirectory))
+    std::error_code sourceEc;
+    if (!is_directory(sourceDirectory, sourceEc))
     {
         LOG_ERROR("sql.updates", "DBUpdater: The given source directory {} does not exist, change the path to the directory where your sql directory exists (for example c:\\source\\azerothcore). Shutting down.",
                   sourceDirectory.generic_string());
@@ -338,6 +339,14 @@ bool UpdateDatabase(DatabaseUpdatePool& pool, DBUpdaterInfo const& info, std::st
     {
         return false;
     }
+    catch (std::filesystem::filesystem_error const& e)
+    {
+        // A filesystem error is not an UpdateException, so without this handler it would
+        // escape every catch block and terminate the server process.
+        LOG_FATAL("sql.updates", "Updating the {} database failed: {}", info.displayName, e.what());
+        DBUpdaterUtil::MarkUpdateFailed();
+        return false;
+    }
 
     std::string const summary = Acore::StringFormat("Containing {} new and {} archived updates.", result.recent, result.archived);
 
@@ -360,7 +369,9 @@ bool UpdateDatabase(DatabaseUpdatePool& pool, DBUpdaterInfo const& info,
     }
 
     Path const sourceDirectory(info.sourceDirectory);
-    if (!is_directory(sourceDirectory))
+
+    std::error_code sourceEc;
+    if (!is_directory(sourceDirectory, sourceEc))
     {
         return false;
     }
@@ -408,6 +419,14 @@ bool UpdateDatabase(DatabaseUpdatePool& pool, DBUpdaterInfo const& info,
     {
         return false;
     }
+    catch (std::filesystem::filesystem_error const& e)
+    {
+        // A filesystem error is not an UpdateException, so without this handler it would
+        // escape every catch block and terminate the server process.
+        LOG_FATAL("sql.updates", "Updating the {} database failed: {}", info.displayName, e.what());
+        DBUpdaterUtil::MarkUpdateFailed();
+        return false;
+    }
 
     return true;
 }
@@ -428,7 +447,13 @@ bool PopulateDatabase(DatabaseUpdatePool& pool, DBUpdaterInfo const& info)
     std::string const DirPathStr = info.baseFilesDirectory;
 
     Path const DirPath(DirPathStr);
-    if (!std::filesystem::is_directory(DirPath))
+
+    // Every std::filesystem call that can fail has to use the error_code overload here.
+    // The throwing overloads raise std::filesystem::filesystem_error, which is not an
+    // UpdateException, so it would escape every catch block below and terminate the
+    // server process instead of failing the update.
+    std::error_code dirEc;
+    if (!std::filesystem::is_directory(DirPath, dirEc))
     {
         LOG_ERROR("sql.updates", ">> Directory \"{}\" not exist", DirPath.generic_string());
         return false;
@@ -440,27 +465,37 @@ bool PopulateDatabase(DatabaseUpdatePool& pool, DBUpdaterInfo const& info)
         return false;
     }
 
-    std::filesystem::directory_iterator const DirItr;
-    uint32 FilesCount = 0;
+    std::vector<std::filesystem::path> sqlFiles;
 
-    for (std::filesystem::directory_iterator itr(DirPath); itr != DirItr; ++itr)
+    std::error_code iterEc;
+    std::filesystem::directory_iterator const DirItr;
+    std::filesystem::directory_iterator itr(DirPath, iterEc);
+    if (iterEc)
+    {
+        LOG_ERROR("sql.updates", ">> Cannot read directory \"{}\" ({})", DirPath.generic_string(), iterEc.message());
+        return false;
+    }
+
+    while (itr != DirItr)
     {
         if (itr->path().extension() == ".sql")
-            FilesCount++;
+            sqlFiles.push_back(itr->path());
+
+        std::error_code incrementEc;
+        itr.increment(incrementEc);
+        if (incrementEc)
+        {
+            LOG_ERROR("sql.updates", ">> Cannot finish reading directory \"{}\" ({})", DirPath.generic_string(), incrementEc.message());
+            break;
+        }
     }
+
+    uint32 FilesCount = sqlFiles.size();
 
     if (!FilesCount)
     {
         LOG_ERROR("sql.updates", ">> In directory \"{}\" not exist '*.sql' files", DirPath.generic_string());
         return false;
-    }
-
-    std::vector<std::filesystem::path> sqlFiles;
-
-    for (auto const& entry : std::filesystem::directory_iterator(DirPath))
-    {
-        if (entry.path().extension() == ".sql")
-            sqlFiles.push_back(entry.path());
     }
 
     std::sort(sqlFiles.begin(), sqlFiles.end());
@@ -475,6 +510,11 @@ bool PopulateDatabase(DatabaseUpdatePool& pool, DBUpdaterInfo const& info)
         }
         catch (UpdateException&)
         {
+            return false;
+        }
+        catch (std::filesystem::filesystem_error const& e)
+        {
+            LOG_FATAL("sql.updates", ">> Failed to apply \"{}\": {}", file.generic_string(), e.what());
             return false;
         }
     }
@@ -507,7 +547,23 @@ void ApplyFile(DatabaseUpdatePool& pool, std::string const& host, std::string co
 {
     std::string configTempDir = sConfigMgr->GetOption<std::string>("TempDir", "");
 
-    auto tempDir = configTempDir.empty() ? std::filesystem::temp_directory_path().string() : configTempDir;
+    // temp_directory_path() throws std::filesystem::filesystem_error when no temporary
+    // directory can be determined. Resolve it through the error_code overload so a
+    // misconfigured environment produces a readable error instead of a dead process.
+    std::string tempDir = configTempDir;
+    if (tempDir.empty())
+    {
+        std::error_code tempEc;
+        Path const systemTemp = std::filesystem::temp_directory_path(tempEc);
+        if (tempEc || systemTemp.empty())
+        {
+            LOG_FATAL("sql.updates", "Cannot determine a temporary directory to store the MySQL client "
+                                     "configuration ({}). Set \"TempDir\" in the *.conf to a writable directory.",
+                tempEc ? tempEc.message() : "unknown error");
+            throw UpdateException("Cannot determine the temporary directory");
+        }
+        tempDir = systemTemp.string();
+    }
 
     tempDir = Acore::String::AddSuffixIfNotExists(tempDir, std::filesystem::path::preferred_separator);
 
@@ -569,8 +625,24 @@ void ApplyFile(DatabaseUpdatePool& pool, std::string const& host, std::string co
         args.emplace_back(database);
 
     // Invokes a mysql process which doesn't leak credentials to logs
+    // generic_string() converts the wide path back to a narrow string and raises
+    // std::filesystem::filesystem_error when the path cannot be represented in the
+    // current code page. Convert once, through the error_code overload, and fail with a
+    // readable message instead of terminating the process.
+    std::error_code pathEc;
+    std::string const pathString = path.generic_string(pathEc);
+    if (pathEc)
+    {
+        LOG_FATAL("sql.updates", "The path of the sql file to apply cannot be converted to a "
+                                 "narrow string ({}). Move the server to a path that is representable "
+                                 "in the current code page or set \"SourceDirectory\" accordingly.",
+            pathEc.message());
+        DBUpdaterUtil::MarkUpdateFailed();
+        throw UpdateException("update failed");
+    }
+
     int const ret = Acore::StartProcess(DBUpdaterUtil::GetCorrectedMySQLExecutable(), args,
-        "sql.updates", path.generic_string(), true);
+        "sql.updates", pathString, true);
 
     if (ret != EXIT_SUCCESS)
     {
@@ -579,7 +651,7 @@ void ApplyFile(DatabaseUpdatePool& pool, std::string const& host, std::string co
             "Also make sure you have not applied any of the databases with your sql client. "
             "You cannot use auto-update system and import sql files from AzerothCore repository with your sql client. "
             "If you are a developer, please fix your sql query.",
-            path.generic_string(), pool.GetConnectionInfo()->database);
+            pathString, pool.GetConnectionInfo()->database);
 
         // Recorded in both modes. A dry run does not throw below, so it keeps attempting the
         // remaining files and this count is the only thing left to fail the run on.

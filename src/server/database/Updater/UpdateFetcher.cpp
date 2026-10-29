@@ -22,6 +22,7 @@
 #include "Log.h"
 #include "Tokenize.h"
 #include "Util.h"
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 
@@ -76,9 +77,24 @@ void UpdateFetcher::FillFileListRecursively(Path const& path, LocaleFileStorage&
     static uint32 const MAX_DEPTH = 10;
     static directory_iterator const end;
 
-    for (directory_iterator itr(path); itr != end; ++itr)
+    // The directory_iterator constructor and operator++ throw std::filesystem::filesystem_error
+    // when the directory cannot be read (removed between the is_directory() check and the
+    // iteration, access denied, a path that is not convertible to the current code page, ...).
+    // Nothing up to main() catches that type, so an unguarded throw here terminates the whole
+    // server instead of failing the update gracefully.
+    std::error_code ec;
+    directory_iterator itr(path, ec);
+    if (ec)
     {
-        if (is_directory(itr->path()))
+        LOG_ERROR("sql.updates", "DBUpdater: Cannot read the update directory \"{}\" ({}), skipped!",
+            path.generic_string(), ec.message());
+        return;
+    }
+
+    while (itr != end)
+    {
+        std::error_code entryEc;
+        if (is_directory(itr->path(), entryEc))
         {
             if (depth < MAX_DEPTH)
                 FillFileListRecursively(itr->path(), storage, state, depth + 1);
@@ -100,6 +116,15 @@ void UpdateFetcher::FillFileListRecursively(Path const& path, LocaleFileStorage&
             }
 
             storage.insert(entry);
+        }
+
+        std::error_code incrementEc;
+        itr.increment(incrementEc);
+        if (incrementEc)
+        {
+            LOG_ERROR("sql.updates", "DBUpdater: Cannot continue reading the update directory \"{}\" ({}), skipped!",
+                path.generic_string(), incrementEc.message());
+            return;
         }
     }
 }
@@ -164,25 +189,41 @@ UpdateFetcher::DirectoryStorage UpdateFetcher::ReceiveIncludedDirectories() cons
         {
             std::string path = _sourceDirectory->generic_string() + "/modules/" + moduleName + "/data/sql/"; // modules/mod-name/data/sql/
             Path const p{path};
-            if (!is_directory(p))
+
+            std::error_code ec;
+            if (!is_directory(p, ec))
                 continue;
 
             directory_iterator const end;
-            for (directory_iterator itr{p}; itr != end; ++itr)
+            directory_iterator itr{p, ec};
+            if (ec)
             {
-                if (!is_directory(itr->path()))
-                    continue;
+                LOG_ERROR("sql.updates", "DBUpdater: Cannot read the module sql directory \"{}\" ({}), skipped!",
+                    p.generic_string(), ec.message());
+                continue;
+            }
 
-                std::filesystem::path dirPath = itr->path(); // modules/mod-name/data/sql/db-world
-                std::string dirName = dirPath.filename().string(); // db-world
+            while (itr != end)
+            {
+                std::error_code entryEc;
+                if (is_directory(itr->path(), entryEc))
+                {
+                    std::filesystem::path dirPath = itr->path(); // modules/mod-name/data/sql/db-world
+                    std::string dirName = dirPath.filename().string(); // db-world
 
-                if (dirName.find(_dbModuleName) == std::string::npos)
-                    continue;
+                    if (dirName.find(_dbModuleName) != std::string::npos)
+                    {
+                        DirectoryEntry const entry = { dirPath, AppliedFileEntry::StateConvert("MODULE") };
+                        directories.push_back(entry);
 
-                DirectoryEntry const entry = { dirPath, AppliedFileEntry::StateConvert("MODULE") };
-                directories.push_back(entry);
+                        LOG_TRACE("sql.updates", "Added applied modules file \"{}\" from remote.", dirPath.filename().generic_string());
+                    }
+                }
 
-                LOG_TRACE("sql.updates", "Added applied modules file \"{}\" from remote.", dirPath.filename().generic_string());
+                std::error_code incrementEc;
+                itr.increment(incrementEc);
+                if (incrementEc)
+                    break;
             }
         }
     }
