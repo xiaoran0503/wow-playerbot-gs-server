@@ -71,6 +71,9 @@ MySQLExecutable = "./mysql/bin/mysql.exe"
 
 ## 二、目录结构
 
+交付根目录固定为 **`D:\wow_server`**（纯 ASCII 路径 —— MySQL 8.4 不接受含中文的
+basedir/datadir，这条路径可以让 MySQL 直接运行，无需 `subst` 映射）。
+
 ```
 D:\wow_server\
 ├─ worldserver.exe            主程序
@@ -79,6 +82,7 @@ D:\wow_server\
 ├─ libcrypto-3-x64.dll        OpenSSL 3.x
 ├─ libssl-3-x64.dll          OpenSSL 3.x
 ├─ legacy.dll                 OpenSSL legacy provider（启动断言要求）
+├─ boost_*.dll                Boost 1.87.0 运行时（88 个，来自官方预编译包）
 ├─ configs\                   运行配置（worldserver.conf / authserver.conf）
 │  └─ modules\                各模块的 .conf
 ├─ data\sql\                  SQL 树（base / updates / custom / archive）
@@ -90,8 +94,17 @@ D:\wow_server\
 ├─ 启动服务器.bat              一键启动（MySQL → authserver → worldserver）
 ├─ 启动mysql.bat               只启动 MySQL
 ├─ 停止服务器.bat              停止全部
+├─ docs\DELIVERY-WINDOWS-D.md  本文档
 └─ Server.log / Auth.log      运行日志
 ```
+
+### 关键配置项（已随包预设好）
+
+| 配置项 | 值 | 说明 |
+|---|---|---|
+| `MySQLExecutable` | `./mysql/bin/mysql.exe` | 指向包内 MySQL。留空会崩溃（见下文根因）|
+| `SourceDirectory` | `.` | 数据库更新器从这里找 `data/sql/`。留空会回落到编译机路径 |
+| `DataDir` | `./datalyf` | 客户端数据目录。写 `.` 会找不到地图文件 |
 
 ---
 
