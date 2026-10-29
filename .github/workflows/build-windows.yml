@@ -195,7 +195,10 @@ jobs:
             Copy-Item $_.FullName (Join-Path "$pkg/configs/modules" ($_.BaseName + '.conf.dist'))
           }
 
-          # 5) 包内部署说明（随包走，用户解压即见）
+          # 5) 一键启动/停止脚本（放在包根目录，用户双击即可）
+          Copy-Item custom/conf-seed/bin/*.bat $pkg/ -ErrorAction SilentlyContinue
+
+          # 6) 包内部署说明（随包走，用户解压即见）
           #    注意：here-string 正文必须与上面的 PowerShell 代码同缩进，
           #    否则 YAML 块标量会在顶格行处提前结束。
           @'
@@ -219,7 +222,22 @@ jobs:
               然后按实际改：数据库连接串（LoginDatabaseInfo 等）、外网 IP、DataDir。
            4) 数据：把 3.3.5a 客户端 Data 用 tools\ 里的提取器跑一遍，产物放进
               服务端旁的 data\ 目录，worldserver.conf 里 DataDir = "./data"。
-           5) 启动顺序：先 authserver.exe，再 worldserver.exe。
+           5) 启动顺序：双击 启动mysql.bat，然后 authserver.exe，再 worldserver.exe。
+              停止：双击 停止服务器.bat。
+
+          【重要】MySQLExecutable
+            数据库自动更新功能要调用 mysql 命令行程序导入 .sql 文件。
+            本包把 MySQL 放在 mysql\bin\ 下，不在系统 PATH 里，所以
+            configs\worldserver.conf 与 configs\authserver.conf 里必须保留
+              MySQLExecutable = "./mysql/bin/mysql.exe"
+            这一行。留空或写错时，服务器会在启动阶段报
+              "Didn't find any executable MySQL binary at ..."
+            然后停止启动 —— 这是有意为之，避免数据库结构只更新一半。
+
+          【关于 legacy.dll】
+            OpenSSL 3.x 把 RC4 等老算法拆成了独立的 legacy provider，
+            服务端启动时会断言它就在 exe 同目录。包里已放好，
+            不要单独替换 libcrypto/libssl 而漏掉它。
 
           【端口】
             官方默认 authserver 3724 / worldserver 8085；
