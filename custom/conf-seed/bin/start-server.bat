@@ -72,7 +72,7 @@ if errorlevel 1 (
         echo       等待 MySQL 就绪 ... !WAIT! 秒
         goto :waitmysql
     )
-    echo [错误] MySQL 未能启动，请检查 logs 或手动运行 启动mysql.bat
+    echo [错误] MySQL 未能启动，请检查 logs 或手动运行 start-mysql.bat
     pause
     exit /b 1
 )
@@ -92,7 +92,7 @@ echo ============================================
 echo   启动完成。
 echo   worldserver 首次初始化需要约 1-3 分钟，
 echo   看到 "World initialized" 后即可用客户端登录。
-echo   停止服务：双击 停止服务器.bat
+echo   停止服务：双击 stop-server.bat
 echo ============================================
 echo.
 pause

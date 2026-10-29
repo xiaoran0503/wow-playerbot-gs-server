@@ -222,8 +222,10 @@ jobs:
               然后按实际改：数据库连接串（LoginDatabaseInfo 等）、外网 IP、DataDir。
            4) 数据：把 3.3.5a 客户端 Data 用 tools\ 里的提取器跑一遍，产物放进
               服务端旁的 data\ 目录，worldserver.conf 里 DataDir = "./data"。
-           5) 启动顺序：双击 启动mysql.bat，然后 authserver.exe，再 worldserver.exe。
-              停止：双击 停止服务器.bat。
+           5) 启动顺序：双击 start-mysql.bat，然后 authserver.exe，再 worldserver.exe。
+              停止：双击 stop-server.bat。（脚本名用英文，因为 Windows 的
+              Compress-Archive 不会给 ZIP 里的中文文件名写 UTF-8 标志位，
+              解压出来会变成乱码。）
 
           【重要】MySQLExecutable
             数据库自动更新功能要调用 mysql 命令行程序导入 .sql 文件。
