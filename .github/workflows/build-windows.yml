@@ -168,10 +168,21 @@ jobs:
           # 3) 运行时 DLL —— 缺一个都可能在用户机器上闪退：
           #    - libmysql.dll        MySQL 客户端动态库
           #    - libcrypto/libssl    OpenSSL 动态库（名字随版本带后缀，用通配）
+          #    - legacy.dll          OpenSSL 3.x 的 legacy provider 动态库
           #    - boost 动态库        filesystem / program_options / dll 等运行时依赖
           Copy-Item 'C:\tools\mysql\current\lib\libmysql.dll' $pkg/
           Get-ChildItem "$env:OPENSSL_ROOT_DIR/bin/libcrypto-*.dll", "$env:OPENSSL_ROOT_DIR/bin/libssl-*.dll" |
             Copy-Item -Destination $pkg/
+          # legacy.dll 是 OpenSSL 3.x 把旧算法（RC4/MD4 等）拆出来的独立 provider。
+          # src/common/Cryptography/OpenSSLCrypto.cpp 在 Windows 上启动时硬断言它就在
+          # exe 同目录（找不到直接 ASSERT 失败退出），所以它必须跟 libcrypto 同版本，
+          # 一起从 runner 的 OpenSSL 安装目录取，不能用别的版本凑数。
+          $legacyDll = Join-Path "$env:OPENSSL_ROOT_DIR/bin" 'legacy.dll'
+          if (-not (Test-Path $legacyDll)) {
+              throw "OpenSSL legacy provider not found at $legacyDll - the server asserts on it at startup."
+          }
+          Copy-Item $legacyDll $pkg/
+          Write-Host ("Picked up OpenSSL legacy provider: {0:N0} bytes" -f (Get-Item $legacyDll).Length)
           # boost 常被静态链接（此时无 dll），通配零匹配不应中止打包。
           Get-ChildItem 'C:\local\boost_1_87_0\lib64-msvc-14.3\*.dll' -ErrorAction SilentlyContinue |
             Copy-Item -Destination $pkg/ -ErrorAction SilentlyContinue
