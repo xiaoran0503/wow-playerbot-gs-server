@@ -10,6 +10,7 @@ extern "C"
 #include "libs/httplib.h"
 #include "HttpManager.h"
 #include "LuaEngine.h"
+#include "ALEConfig.h"
 
 HttpWorkItem::HttpWorkItem(int funcRef, const std::string& httpVerb, const std::string& url, const std::string& body, const std::string& contentType, const httplib::Headers& headers)
     : funcRef(funcRef),
@@ -46,6 +47,19 @@ HttpManager::~HttpManager()
 
 void HttpManager::PushRequest(HttpWorkItem* item)
 {
+    // Outbound HTTP is opt-in. A game server has no reason to talk to the
+    // internet, and the TLS path of cpp-httplib (which runs on its own
+    // thread) is not safe against the statically linked OpenSSL that the
+    // server itself uses - it crashed the process with an access violation
+    // while the TLS handshake was running through an HTTP proxy.
+    if (!ALEConfig::GetInstance().IsHttpEnabled())
+    {
+        ALE_LOG_ERROR("[ALE]: HTTP requests are disabled (ALE.HttpEnabled = false), dropping request to {}",
+            item ? item->url : "<null>");
+        delete item;
+        return;
+    }
+
     std::unique_lock<std::mutex> lock(condVarMutex);
     workQueue.push(item);
     condVar.notify_one();
@@ -141,6 +155,16 @@ void HttpManager::HttpWorkerThread()
             cli.set_write_timeout(5, 0); // 5 seconds
 
             httplib::Result res = DoRequest(cli, req, path);
+
+            // DoRequest returns a null Result when the transfer never produced a
+            // response (DNS failure, refused connection, TLS handshake error).
+            // Dereferencing it would take the whole server down.
+            if (!res)
+            {
+                ALE_LOG_ERROR("[ALE]: HTTP request to {} failed without a response", req->url);
+                continue;
+            }
+
             httplib::Error err = res.error();
             if (err != httplib::Error::Success)
             {
@@ -164,6 +188,12 @@ void HttpManager::HttpWorkerThread()
                 cli2.set_read_timeout(5, 0); // 5 seconds
                 cli2.set_write_timeout(5, 0); // 5 seconds
                 res = DoRequest(cli2, req, path);
+
+                if (!res)
+                {
+                    ALE_LOG_ERROR("[ALE]: HTTP redirect to {} failed without a response", location);
+                    continue;
+                }
             }
 
             responseQueue.push(new HttpResponse(req->funcRef, res->status, res->body, res->headers));

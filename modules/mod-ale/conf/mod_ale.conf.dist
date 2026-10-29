@@ -69,6 +69,17 @@ ALE.RequireCPaths = ""
 ALE.AutoReload = false
 ALE.AutoReloadInterval = 1
 ALE.BytecodeCache = true
+#
+#   ALE.HttpEnabled
+#       Description: Allow Lua scripts to perform outbound HTTP requests via HttpRequest().
+#                    A game server normally has no reason to reach the internet, and the
+#                    TLS path of the bundled HTTP client runs on a background thread that
+#                    crashed the process with an access violation while the TLS handshake
+#                    was going through an HTTP proxy.
+#                    Set this to true only if a script really needs it.
+#       Default:    false  - (disabled, no outbound traffic)
+#                   true   - (enabled)
+ALE.HttpEnabled = false
 
 ###################################################################################################
 # LOGGING SYSTEM SETTINGS

@@ -24,6 +24,17 @@ echo   WOW 自维护版服务器端 - 一键启动
 echo ============================================
 echo.
 
+rem ---- 0) 清掉代理环境变量 ----
+rem 游戏服务器不需要访问外网。留着 shell 里的 http_proxy 会让 Lua 引擎
+rem 内置的 HTTP 客户端走代理隧道，其 TLS 握手在静态链接的 OpenSSL 下
+rem 会让 worldserver 以访问违例崩溃（Crashes\*.dmp）。
+set "http_proxy="
+set "https_proxy="
+set "HTTP_PROXY="
+set "HTTPS_PROXY="
+set "ALL_PROXY="
+set "all_proxy="
+
 rem ---- 1) MySQL ----
 if not exist "%~dp0mysql\bin\mysqld.exe" (
     echo [错误] 找不到 mysql\bin\mysqld.exe
