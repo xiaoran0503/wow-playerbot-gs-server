@@ -32,10 +32,27 @@ mkdir -p "$OUT"
 say 3/6 "复制核心程序与运行时 DLL"
 cp -r "$PKG/." "$OUT/"
 
-say 4/6 "合入本地运行时资源（MySQL / datalyf / lua_scripts）"
-[ -d "$ROOT/_runtime_backup/mysql" ]       && cp -r "$ROOT/_runtime_backup/mysql" "$OUT/mysql"
-[ -d "$ROOT/_runtime_backup/datalyf" ]     && cp -r "$ROOT/_runtime_backup/datalyf" "$OUT/datalyf"
-[ -d "$ROOT/_runtime_backup/lua_scripts" ] && cp -r "$ROOT/_runtime_backup/lua_scripts" "$OUT/lua_scripts"
+say 4/6 "合入本地运行时资源（MySQL / datalyf / lua_scripts / data / modules）"
+# 大目录（datalyf 约 7GB）用 junction 指向 E 盘的运行时备份，
+# 避免重复占用磁盘；junction 对服务端完全透明。
+link_or_copy() {
+  local name="$1" src="$2"
+  if [ -d "$src" ]; then
+    if [ -e "$OUT/$name" ]; then rm -rf "$OUT/$name" 2>/dev/null || true; fi
+    if command -v cmd >/dev/null 2>&1 && cmd //c "mklink /J \"$(cygpath -w "$OUT/$name")\" \"$(cygpath -w "$src")\"" >/dev/null 2>&1; then
+      echo "      $name -> junction -> $src"
+    else
+      cp -r "$src" "$OUT/$name"
+      echo "      $name -> copied from $src"
+    fi
+  fi
+}
+link_or_copy mysql       "$ROOT/_runtime_backup/mysql"
+link_or_copy datalyf     "$ROOT/_runtime_backup/datalyf"
+link_or_copy lua_scripts "$ROOT/_runtime_backup/lua_scripts"
+# data/ 与 modules/ 跟随代码仓库的最新状态
+link_or_copy data        "$ROOT/wow-playerbot-server/data"
+link_or_copy modules     "$ROOT/wow-playerbot-server/modules"
 
 say 5/6 "生成运行配置"
 cp -f "$OUT/configs/worldserver.conf.dist" "$OUT/configs/worldserver.conf" 2>/dev/null || true
