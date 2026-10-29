@@ -625,21 +625,11 @@ void ApplyFile(DatabaseUpdatePool& pool, std::string const& host, std::string co
         args.emplace_back(database);
 
     // Invokes a mysql process which doesn't leak credentials to logs
-    // generic_string() converts the wide path back to a narrow string and raises
+    // string() converts the wide path back to a narrow string and raises
     // std::filesystem::filesystem_error when the path cannot be represented in the
-    // current code page. Convert once, through the error_code overload, and fail with a
-    // readable message instead of terminating the process.
-    std::error_code pathEc;
-    std::string const pathString = path.generic_string(pathEc);
-    if (pathEc)
-    {
-        LOG_FATAL("sql.updates", "The path of the sql file to apply cannot be converted to a "
-                                 "narrow string ({}). Move the server to a path that is representable "
-                                 "in the current code page or set \"SourceDirectory\" accordingly.",
-            pathEc.message());
-        DBUpdaterUtil::MarkUpdateFailed();
-        throw UpdateException("update failed");
-    }
+    // current code page. The callers of ApplyFile catch that type, so a failure
+    // ends up as a readable error instead of terminating the process.
+    std::string const pathString = path.string();
 
     int const ret = Acore::StartProcess(DBUpdaterUtil::GetCorrectedMySQLExecutable(), args,
         "sql.updates", pathString, true);
