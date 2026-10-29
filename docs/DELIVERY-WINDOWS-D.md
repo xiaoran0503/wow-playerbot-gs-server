@@ -166,6 +166,46 @@ python scripts/verify-db-schema.py "D:/wow_server/mysql/bin/mysql.exe" "D:/wow_s
 bash scripts/fix-realm-name.sh "D:/wow_server/mysql/bin/mysql.exe" acore_auth
 ```
 
+### 账号权限修复（启动报 1142 / 1044 时必做）
+
+官方 `data/sql/create/create_mysql.sql` 会**单独建** `acore@localhost`
+并授权三个核心库。从旧套件迁移过来的库通常只有 `acore@%`，
+于是以 `localhost` 发起的连接全部被拒，服务端日志刷：
+
+```
+[1142] CREATE command denied to user 'acore'@'localhost' for table '...'
+[1044] Access denied for user 'acore'@'%' to database 'ac_eluna'
+Unhandled MySQL errno 1142. Unexpected behaviour possible.
+```
+
+另外 `custom/lua_scripts/RecruitAFriend.lua` 用独立的 `ac_eluna` 库存
+战友招募数据，脚本自己会 `CREATE DATABASE`，但 `acore` 用户没有建库权限。
+
+一条命令修好：
+
+```bash
+bash scripts/fix-db-permissions.sh "D:/wow_server/mysql/bin/mysql.exe"
+```
+
+它按官方 SQL 重建 `acore@localhost`、授权四个库，并建好 `ac_eluna`。
+
+### 补齐迁移遗漏的表
+
+旧套件迁移过来的库**不是空的**，所以 `PopulateDatabase` 判定「库非空」而
+从不执行 base SQL —— 那些**只存在于 base 文件里、从未被 update 文件覆盖**的
+表就会缺失。本次发现 `acore_playerbots` 缺 `playerbots_speech` 与
+`playerbots_speech_probability`，已用上游 base SQL 补齐。
+
+排查同类问题用：
+
+```bash
+python scripts/verify-db-schema.py "D:/wow_server/mysql/bin/mysql.exe" "D:/wow_server"
+```
+
+它会比对：base SQL 里 `CREATE TABLE` 的表是否都存在、update SQL 里
+`ADD COLUMN` 的列是否都存在，并识别出被官方更新主动 `DROP` 的表
+（`spell_proc_event` 在 `2026_10_28_00.sql` 里被删，属正常）。
+
 ---
 
 ## 五、依赖版本
