@@ -1,0 +1,32 @@
+## Interface: 30300
+## Title: Journal
+## Title-zhCN: 冒险日志
+## Title-zhTW: 冒險日誌
+## Notes-zhCN: 一站式冒险日志：每个副本的首领、技能、掉落与任务，全服任务按区域分类，训练师/飞行点/银行等城镇 NPC 名录，随探索逐步解锁的区域典故，以及全部坐骑、宠物、玩具和获取途径。Shift-J、/journal、/quests、/directory、/lore、/mounts、/pets、/toys。数据由 mod-forever-journal 服务端模块提供。
+## Notes-zhTW: 一站式冒險日誌：副本首領、技能、掉落與任務，全服任務依區域分類，訓練師/飛行點/銀行等城鎮 NPC 名錄，隨探索逐步解鎖的區域典故，以及全部坐騎、寵物、玩具與取得途徑。Shift-J、/journal、/quests、/directory、/lore、/mounts、/pets、/toys。資料由 mod-forever-journal 伺服器端模組提供。
+## Notes: A retail-style journal in one window: every dungeon and raid with its bosses, abilities, loot and quests, every quest of the realm by zone, a directory of trainers, flight masters, banks and other townsfolk, a codex of each zone's lore that fills in as you play, and every mount, pet and toy with where to get it. Other addons add tabs of their own. Shift-J, /journal, /quests, /directory, /lore, /mounts, /pets, /toys. Backed by the mod-forever-journal server module.
+## Author: buildthehomelab
+## Version: 2.5.7
+## OptionalDeps: DragonUI
+## SavedVariables: JournalDB
+## SavedVariablesPerCharacter: JournalCharDB
+
+Localization.lua
+Core.lua
+Widgets.lua
+Data.lua
+CollectionData.lua
+Frame.lua
+InstanceList.lua
+Instance.lua
+Overview.lua
+Abilities.lua
+Loot.lua
+Quests.lua
+QuestTab.lua
+DirectoryTab.lua
+Lore.lua
+LoreTab.lua
+Collections.lua
+TooltipHints.lua
+Minimap.lua

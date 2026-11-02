@@ -1,8 +1,9 @@
-SET @MODULE_STRING := 'mod-aoe-loot';
+-- 变量统一到表列的排序规则，否则不同连接字符集下 = 比较会报 Illegal mix of collations
+SET @MODULE_STRING := CONVERT('mod-aoe-loot' USING utf8mb4) COLLATE utf8mb4_unicode_ci;
 
 -- module string
 DELETE FROM `module_string` WHERE `module` = @MODULE_STRING;
-INSERT INTO `module_string` (`module`, `id`, `string`) VALUES
+INSERT IGNORE INTO `module_string` (`module`, `id`, `string`) VALUES
 (@MODULE_STRING, 1, 'This server is running the |cff4CFF00Loot aoe|r module.'),
 (@MODULE_STRING, 2, '|cff4CFF00[Loot aoe]|r Your items has been mailed to you.'),
 (@MODULE_STRING, 3, 'AOE Loot module is active. Use .aoeloot on/off to toggle it.'),
@@ -14,8 +15,7 @@ INSERT INTO `module_string` (`module`, `id`, `string`) VALUES
 
 -- localizations
 DELETE FROM `module_string_locale` WHERE `module` = @MODULE_STRING;
-INSERT INTO `module_string_locale` (`module`, `id`, `locale`, `string`) VALUES
--- ID 1: welcome
+INSERT IGNORE INTO `module_string_locale` (`module`, `id`, `locale`, `string`) VALUES
 (@MODULE_STRING, 1, 'koKR', '이 서버는 |cff4CFF00Loot aoe|r 모듈을 실행 중입니다.'),
 (@MODULE_STRING, 1, 'frFR', 'Ce serveur utilise le module |cff4CFF00Loot aoe|r.'),
 (@MODULE_STRING, 1, 'deDE', 'Dieser Server verwendet das |cff4CFF00Loot aoe|r-Modul.'),
@@ -24,7 +24,6 @@ INSERT INTO `module_string_locale` (`module`, `id`, `locale`, `string`) VALUES
 (@MODULE_STRING, 1, 'esES', 'Este servidor está ejecutando el módulo |cff4CFF00Loot aoe|r.'),
 (@MODULE_STRING, 1, 'esMX', 'Este servidor está ejecutando el módulo |cff4CFF00Loot aoe|r.'),
 (@MODULE_STRING, 1, 'ruRU', 'На этом сервере запущен модуль |cff4CFF00Loot aoe|r.'),
--- ID 2: items mailed
 (@MODULE_STRING, 2, 'koKR', '|cff4CFF00[Loot aoe]|r 아이템이 우편으로 발송되었습니다.'),
 (@MODULE_STRING, 2, 'frFR', '|cff4CFF00[Loot aoe]|r Vos objets vous ont été envoyés par courrier.'),
 (@MODULE_STRING, 2, 'deDE', '|cff4CFF00[Loot aoe]|r Deine Gegenstände wurden dir per Post zugesandt.'),
@@ -33,7 +32,6 @@ INSERT INTO `module_string_locale` (`module`, `id`, `locale`, `string`) VALUES
 (@MODULE_STRING, 2, 'esES', '|cff4CFF00[Loot aoe]|r  Sus artículos le han sido enviados por correo.'),
 (@MODULE_STRING, 2, 'esMX', '|cff4CFF00[Loot aoe]|r  Sus artículos le han sido enviados por correo.'),
 (@MODULE_STRING, 2, 'ruRU', '|cff4CFF00[Loot aoe]|r Ваши предметы отправлены вам по почте.'),
--- ID 3: module active
 (@MODULE_STRING, 3, 'koKR', 'AOE Loot 모듈이 활성화되었습니다. .aoeloot on/off로 전환하세요.'),
 (@MODULE_STRING, 3, 'frFR', 'Le module AOE Loot est actif. Utilisez .aoeloot on/off pour le basculer.'),
 (@MODULE_STRING, 3, 'deDE', 'Das AOE-Loot-Modul ist aktiv. Verwende .aoeloot on/off, um es umzuschalten.'),
@@ -42,7 +40,6 @@ INSERT INTO `module_string_locale` (`module`, `id`, `locale`, `string`) VALUES
 (@MODULE_STRING, 3, 'esES', 'El módulo de Botín AOE está activo. Usa .aoeloot on/off para activarlo o desactivarlo.'),
 (@MODULE_STRING, 3, 'esMX', 'El módulo de Botín AOE está activo. Usa .aoeloot on/off para activarlo o desactivarlo.'),
 (@MODULE_STRING, 3, 'ruRU', 'Модуль AOE Loot активен. Используйте .aoeloot on/off для переключения.'),
--- ID 4: quest item mailed
 (@MODULE_STRING, 4, 'koKR', 'AOE Loot: 퀘스트 아이템이 우편함으로 발송되었습니다.'),
 (@MODULE_STRING, 4, 'frFR', 'AOE Loot : objet de quête envoyé à votre boîte aux lettres.'),
 (@MODULE_STRING, 4, 'deDE', 'AOE Loot: Questgegenstand an dein Postfach gesendet.'),
@@ -51,7 +48,6 @@ INSERT INTO `module_string_locale` (`module`, `id`, `locale`, `string`) VALUES
 (@MODULE_STRING, 4, 'esES', 'Botín AOE: Objeto de misión enviado a tu buzón.'),
 (@MODULE_STRING, 4, 'esMX', 'Botín AOE: Objeto de misión enviado a tu buzón.'),
 (@MODULE_STRING, 4, 'ruRU', 'AOE Loot: предмет задания отправлен на вашу почту.'),
--- ID 5: already enabled
 (@MODULE_STRING, 5, 'koKR', 'AOE Loot은 이미 캐릭터에 대해 활성화되어 있습니다.'),
 (@MODULE_STRING, 5, 'frFR', 'AOE Loot est déjà activé pour votre personnage.'),
 (@MODULE_STRING, 5, 'deDE', 'AOE Loot ist für deinen Charakter bereits aktiviert.'),
@@ -60,7 +56,6 @@ INSERT INTO `module_string_locale` (`module`, `id`, `locale`, `string`) VALUES
 (@MODULE_STRING, 5, 'esES', 'El Botín AOE ya está activado para tu personaje.'),
 (@MODULE_STRING, 5, 'esMX', 'El Botín AOE ya está activado para tu personaje.'),
 (@MODULE_STRING, 5, 'ruRU', 'AOE Loot уже включён для вашего персонажа.'),
--- ID 6: enabled
 (@MODULE_STRING, 6, 'koKR', 'AOE Loot이 캐릭터에 대해 활성화되었습니다. 비활성화하려면 .aoeloot off를 입력하세요.'),
 (@MODULE_STRING, 6, 'frFR', 'AOE Loot activé pour votre personnage. Tapez .aoeloot off pour le désactiver.'),
 (@MODULE_STRING, 6, 'deDE', 'AOE Loot für deinen Charakter aktiviert. Gib .aoeloot off ein, um es zu deaktivieren.'),
@@ -69,7 +64,6 @@ INSERT INTO `module_string_locale` (`module`, `id`, `locale`, `string`) VALUES
 (@MODULE_STRING, 6, 'esES', 'Botín AOE activado para tu personaje. Escribe .aoeloot off para desactivarlo.'),
 (@MODULE_STRING, 6, 'esMX', 'Botín AOE activado para tu personaje. Escribe .aoeloot off para desactivarlo.'),
 (@MODULE_STRING, 6, 'ruRU', 'AOE Loot включён для вашего персонажа. Введите .aoeloot off, чтобы отключить.'),
--- ID 7: already disabled
 (@MODULE_STRING, 7, 'koKR', 'AOE Loot은 이미 캐릭터에 대해 비활성화되어 있습니다.'),
 (@MODULE_STRING, 7, 'frFR', 'AOE Loot est déjà désactivé pour votre personnage.'),
 (@MODULE_STRING, 7, 'deDE', 'AOE Loot ist für deinen Charakter bereits deaktiviert.'),
@@ -78,7 +72,6 @@ INSERT INTO `module_string_locale` (`module`, `id`, `locale`, `string`) VALUES
 (@MODULE_STRING, 7, 'esES', 'El Botín AOE ya está desactivado para tu personaje.'),
 (@MODULE_STRING, 7, 'esMX', 'El Botín AOE ya está desactivado para tu personaje.'),
 (@MODULE_STRING, 7, 'ruRU', 'AOE Loot уже отключён для вашего персонажа.'),
--- ID 8: disabled
 (@MODULE_STRING, 8, 'koKR', 'AOE Loot이 캐릭터에 대해 비활성화되었습니다. 활성화하려면 .aoeloot on을 입력하세요.'),
 (@MODULE_STRING, 8, 'frFR', 'AOE Loot désactivé pour votre personnage. Tapez .aoeloot on pour l''activer.'),
 (@MODULE_STRING, 8, 'deDE', 'AOE Loot für deinen Charakter deaktiviert. Gib .aoeloot on ein, um es zu aktivieren.'),

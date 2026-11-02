@@ -12,7 +12,7 @@
 void AutoBalance_PlayerScript::OnPlayerLogin(Player* Player)
 {
     if (EnableGlobal && Announcement)
-        ChatHandler(Player->GetSession()).SendSysMessage("本服已运行 |cff4CFF00AutoBalance |r动态难度平衡模块。");
+        ChatHandler(Player->GetSession()).SendSysMessage("本服已启用 |cff4CFF00自动平衡（AutoBalance）|r 模块。");
 }
 
 void AutoBalance_PlayerScript::OnPlayerLevelChanged(Player* player, uint8 oldlevel)

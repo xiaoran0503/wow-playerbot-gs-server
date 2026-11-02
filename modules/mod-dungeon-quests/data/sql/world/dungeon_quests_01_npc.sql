@@ -1,0 +1,77 @@
+-- mod-dungeon-quests — the quest giver of the dungeons and its texts.
+--
+--   creature 94600   the quest giver, the same in every dungeon: the map it
+--                    stands on picks its quests (`mod_dungeon_quests`)
+--   npc_text 94600   its greeting when it has quests for the player
+--   npc_text 94601   its greeting when it has none
+--
+-- The look of Archmage Timear (31439), the Kirin Tor mage who sends players
+-- into the dungeons of Northrend; neutral (faction 35), gossip and quest giver.
+-- No `creature_queststarter` / `creature_questender` row: the module answers
+-- the quest packets itself.
+--
+-- Block 94600-94699 of the WoW-mods registry. Idempotent: every row is deleted before
+-- being written again.
+
+DELETE FROM `creature_template` WHERE `entry` = 94600;
+INSERT IGNORE INTO `creature_template` (`entry`, `name`, `subname`, `IconName`, `gossip_menu_id`, `minlevel`, `maxlevel`, `exp`, `faction`, `npcflag`, `speed_walk`, `speed_run`, `rank`, `unit_class`, `unit_flags`, `unit_flags2`, `type`, `type_flags`, `RegenHealth`, `flags_extra`, `AIName`, `ScriptName`) VALUES
+(94600, 'Quest Emissary', 'Dungeon Quests', '', 0, 80, 80, 2, 35, 3, 1, 1.14286, 0, 8, 768, 2048, 7, 0, 1, 2, '', 'npc_dungeon_quests');
+
+DELETE FROM `creature_template_model` WHERE `CreatureID` = 94600;
+INSERT IGNORE INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES
+(94600, 0, 27592, 1, 1, 0);
+
+DELETE FROM `creature_template_locale` WHERE `entry` = 94600;
+INSERT IGNORE INTO `creature_template_locale` (`entry`, `locale`, `Name`, `Title`, `VerifiedBuild`) VALUES
+(94600, 'frFR', 'Émissaire des quêtes', 'Quêtes de donjon', 0),
+(94600, 'deDE', 'Questgesandter', 'Dungeonquests', 0),
+(94600, 'esES', 'Emisario de misiones', 'Misiones de mazmorra', 0),
+(94600, 'esMX', 'Emisario de misiones', 'Misiones de mazmorra', 0),
+(94600, 'ruRU', 'Посланник заданий', 'Задания подземелья', 0),
+(94600, 'zhCN', '任务使者', '副本任务', 0),
+(94600, 'zhTW', '任務使者', '副本任務', 0);
+
+DELETE FROM `npc_text` WHERE `ID` IN (94600, 94601);
+INSERT IGNORE INTO `npc_text` (`ID`, `text0_0`, `text0_1`, `Probability0`) VALUES
+(94600, 'Every task this place holds passes through my hands, whoever sent you and whatever banner you march under. Take what you will, and come back to me when it is done.', '', 1),
+(94601, 'I have no task for you in this place. Perhaps another dungeon holds work for you.', '', 1);
+
+DELETE FROM `npc_text_locale` WHERE `ID` IN (94600, 94601);
+INSERT IGNORE INTO `npc_text_locale` (`ID`, `Locale`, `Text0_0`, `Text0_1`) VALUES
+(94600, 'frFR', 'Toutes les tâches de ce lieu passent entre mes mains, qui que soit celui qui vous envoie et quelle que soit votre bannière. Prenez ce que vous voulez, et revenez me voir quand ce sera fait.', ''),
+(94600, 'deDE', 'Jede Aufgabe dieses Ortes geht durch meine Hände, wer auch immer Euch schickt und unter welchem Banner Ihr auch marschiert. Nehmt, was Ihr wollt, und kehrt zu mir zurück, wenn es vollbracht ist.', ''),
+(94600, 'esES', 'Todas las tareas de este lugar pasan por mis manos, os envíe quien os envíe y bajo el estandarte que sea. Tomad lo que queráis y volved a verme cuando esté hecho.', ''),
+(94600, 'esMX', 'Todas las tareas de este lugar pasan por mis manos, te envíe quien te envíe y bajo el estandarte que sea. Toma lo que quieras y vuelve a verme cuando esté hecho.', ''),
+(94600, 'ruRU', 'Все задания этого места проходят через мои руки, кто бы вас ни послал и под каким бы знаменем вы ни шли. Берите что пожелаете и возвращайтесь ко мне, когда дело будет сделано.', ''),
+(94601, 'frFR', 'Je n''ai aucune tâche pour vous en ce lieu. Un autre donjon aura peut-être du travail pour vous.', ''),
+(94601, 'deDE', 'Ich habe an diesem Ort keine Aufgabe für Euch. Vielleicht hält ein anderer Dungeon Arbeit für Euch bereit.', ''),
+(94601, 'esES', 'No tengo ninguna tarea para vos en este lugar. Quizá otra mazmorra tenga trabajo para vos.', ''),
+(94601, 'esMX', 'No tengo ninguna tarea para ti en este lugar. Quizá otra mazmorra tenga trabajo para ti.', ''),
+(94601, 'ruRU', 'В этом месте у меня нет для вас заданий. Возможно, в другом подземелье для вас найдется работа.', ''),
+(94600, 'zhCN', '此地所有的委托都要经我的手，不论是谁派你来的，也不论你打着谁的旗号。想接什么就接下吧，办完之后回来找我。', ''),
+(94600, 'zhTW', '此地所有的委託都要經我的手，不論是誰派你來的，也不論你打著誰的旗號。想接什麼就接下吧，辦完之後回來找我。', ''),
+(94601, 'zhCN', '在这里我没有能交给你的任务。也许别的副本里有适合你的活。', ''),
+(94601, 'zhTW', '在這裡我沒有能交給你的任務。也許別的副本裡有適合你的活。', '');
+
+-- The page buttons of a long list.
+DELETE FROM `module_string` WHERE `module` = 'mod-dungeon-quests';
+INSERT IGNORE INTO `module_string` (`module`, `id`, `string`) VALUES
+('mod-dungeon-quests', 1, 'More quests...'),
+('mod-dungeon-quests', 2, 'Previous quests...');
+
+DELETE FROM `module_string_locale` WHERE `module` = 'mod-dungeon-quests';
+INSERT IGNORE INTO `module_string_locale` (`module`, `id`, `locale`, `string`) VALUES
+('mod-dungeon-quests', 1, 'frFR', 'Autres quêtes...'),
+('mod-dungeon-quests', 2, 'frFR', 'Quêtes précédentes...'),
+('mod-dungeon-quests', 1, 'deDE', 'Weitere Quests...'),
+('mod-dungeon-quests', 2, 'deDE', 'Vorherige Quests...'),
+('mod-dungeon-quests', 1, 'esES', 'Más misiones...'),
+('mod-dungeon-quests', 2, 'esES', 'Misiones anteriores...'),
+('mod-dungeon-quests', 1, 'esMX', 'Más misiones...'),
+('mod-dungeon-quests', 2, 'esMX', 'Misiones anteriores...'),
+('mod-dungeon-quests', 1, 'ruRU', 'Другие задания...'),
+('mod-dungeon-quests', 2, 'ruRU', 'Предыдущие задания...'),
+('mod-dungeon-quests', 1, 'zhCN', '更多任务...'),
+('mod-dungeon-quests', 2, 'zhCN', '上一页任务...'),
+('mod-dungeon-quests', 1, 'zhTW', '更多任務...'),
+('mod-dungeon-quests', 2, 'zhTW', '上一頁任務...');

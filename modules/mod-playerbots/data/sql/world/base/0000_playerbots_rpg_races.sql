@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS `playerbots_rpg_races`;
-CREATE TABLE `playerbots_rpg_races`
+CREATE TABLE IF NOT EXISTS `playerbots_rpg_races`
 (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `entry` int(11),
@@ -14,7 +14,7 @@ DELETE FROM `playerbots_rpg_races`;
 
 -- say
 
-INSERT INTO `playerbots_rpg_races` VALUES
+INSERT IGNORE INTO `playerbots_rpg_races` VALUES
 --
 --       DRAENEI
 --

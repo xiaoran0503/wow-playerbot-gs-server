@@ -51,6 +51,7 @@ local DEFAULTS = {
 -- them to be applied. Everything else stays local to this file.
 QuestRadar = QuestRadar or {}
 local QR = QuestRadar
+local L = QR.L
 
 local DB
 local Astrolabe
@@ -528,7 +529,7 @@ driver:SetScript("OnEvent", function(self, event)
     if event == "PLAYER_LOGIN" or event == "PLAYER_ENTERING_WORLD" then
         InitDB()
         if not GetAstrolabe() then
-            Print("|cffff4040!Astrolabe introuvable|r - Interface\\AddOns\\!Astrolabe doit etre present et active.")
+            Print(L["|cffff4040!Astrolabe introuvable|r - Interface\\AddOns\\!Astrolabe doit etre present et active."])
         end
     end
     Invalidate()
@@ -605,21 +606,21 @@ local function Status()
     local lib = GetAstrolabe()
     local continent, zone = GetCurrentMapContinent(), GetCurrentMapZone()
     Print("v" .. VERSION
-        .. " | actif=" .. tostring(DB.enabled)
-        .. " | !Astrolabe=" .. (lib and "ok" or "|cffff4040absent|r")
-        .. " | echelle=" .. tostring(DB.scale))
-    Print("carte: continent=" .. tostring(continent) .. " zone=" .. tostring(zone)
+        .. " | " .. L["actif="] .. tostring(DB.enabled)
+        .. " | !Astrolabe=" .. (lib and "ok" or "|cffff4040" .. L["absent"] .. "|r")
+        .. " | " .. L["echelle="] .. tostring(DB.scale))
+    Print(L["carte: continent="] .. tostring(continent) .. L[" zone="] .. tostring(zone)
         .. " (" .. tostring(GetZoneText()) .. ")")
-    Print("quetes=" .. lastCounts.quests
-        .. " | objectifs annonces=" .. lastCounts.pois
-        .. " | icones placees=" .. lastCounts.placed
-        .. " | filtre=" .. (DB.onlyTracked and "quetes suivies" or "toutes"))
-    Print("source=" .. lastCounts.source
-        .. " | module serveur=" .. (not DB.useModule and "desactive"
-            or (QR.moduleSeen and "detecte" or "pas de reponse")))
+    Print(L["quetes="] .. lastCounts.quests
+        .. " |" .. L["objectifs annonces="] .. lastCounts.pois
+        .. " |" .. L["icones placees="] .. lastCounts.placed
+        .. " |" .. L["filtre="] .. (DB.onlyTracked and L["quetes suivies"] or L["toutes"]))
+    Print(L["source="] .. L[tostring(lastCounts.source)]
+        .. " |" .. L["module serveur="] .. (not DB.useModule and L["desactive"]
+            or (QR.moduleSeen and L["detecte"] or L["pas de reponse"])))
     if lastCounts.pois == 0 then
-        Print("0 POI: si la carte du monde n affiche pas non plus de pastilles numerotees, "
-            .. "la table quest_poi du monde est vide cote serveur.")
+        Print(L["0 POI: si la carte du monde n affiche pas non plus de pastilles numerotees, "]
+            .. L["la table quest_poi du monde est vide cote serveur."])
     end
 end
 
@@ -630,7 +631,7 @@ local function Toggle(value)
     else
         ReleaseAll()
     end
-    Print(DB.enabled and "active." or "desactive.")
+    Print(DB.enabled and L["active."] or L["desactive."])
 end
 
 SLASH_QUESTRADAR1 = "/qr"
@@ -651,32 +652,32 @@ SlashCmdList["QUESTRADAR"] = function(msg)
     elseif cmd == "completed" then
         DB.showCompleted = not DB.showCompleted
         Invalidate()
-        Print("quetes terminees: " .. (DB.showCompleted and "affichees" or "masquees"))
+        Print(L["quetes terminees: "] .. (DB.showCompleted and L["affichees"] or L["masquees"]))
     elseif cmd == "tracked" then
         DB.onlyTracked = not DB.onlyTracked
         Invalidate()
         Print(DB.onlyTracked
-            and "seules les quetes suivies sont affichees"
-            or "toutes les quetes de la zone sont affichees")
+            and L["seules les quetes suivies sont affichees"]
+            or L["toutes les quetes de la zone sont affichees"])
     elseif cmd == "module" then
         DB.useModule = not DB.useModule
         Invalidate()
-        Print("module serveur: " .. (DB.useModule and "utilise si present" or "ignore"))
+        Print(L["module serveur: "] .. (DB.useModule and L["utilise si present"] or L["ignore"]))
     elseif cmd == "edge" or cmd == "arrows" then
         DB.showOffscreen = not DB.showOffscreen
-        Print("objectifs hors de portee (colles au bord): "
-            .. (DB.showOffscreen and "affiches" or "masques"))
+        Print(L["objectifs hors de portee (colles au bord): "]
+            .. (DB.showOffscreen and L["affiches"] or L["masques"]))
     elseif cmd == "scale" then
         local value = tonumber(arg)
         if value and value >= 0.5 and value <= 3 then
             DB.scale = value
             ApplyScale()
             Invalidate()
-            Print("echelle des icones = " .. value)
+            Print(L["echelle des icones = "] .. value)
         else
-            Print("echelle: une valeur entre 0.5 et 3")
+            Print(L["echelle: une valeur entre 0.5 et 3"])
         end
     else
-        Print("/qr [on|off] | status | tracked | completed | edge | module | scale <0.5-3>")
+        Print(L["/qr [on|off] | status | tracked | completed | edge | module | scale <0.5-3>"])
     end
 end

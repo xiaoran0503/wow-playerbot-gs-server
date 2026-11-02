@@ -1,0 +1,132 @@
+[worldserver]
+
+############## Global settings ##############
+
+#
+#    BrawlersGuild.Enabled
+#        Description: Enable or Disable the BrawlersGuild Module.
+#        Default:     BrawlersGuild.Enabled   = 1
+#
+
+BrawlersGuild.Enabled = 1
+
+#
+#    BrawlersGuild.Announce
+#        Description: Announce the BrawlersGuild Module at logon.
+#        Default:     BrawlersGuild.Announce   = 1
+#
+
+BrawlersGuild.Announce = 1
+
+#
+#    BrawlersGuild.CurrentSeason
+#        Description: Current season of BrawlersGuild.
+#        Default:     Default  = 1
+#
+#        Season 1 - Tier 7  (213~)
+#        Season 2 - Tier 8  (232~)
+#        Season 3 - Tier 9  (245~)
+#        Season 4 - Tier 10 (264~)
+#
+
+BrawlersGuild.CurrentSeason = 1
+
+############## Coin Settings ##############
+
+#
+#    BrawlersGuild.CoinsStartingQuestReward
+#        Description: Amount of coins that are rewarded upon completing the starting quest.
+#        Default:     Default  = 10
+#
+
+BrawlersGuild.CoinsStartingQuestReward = 10
+
+#
+#    BrawlersGuild.CoinsVictoryReward
+#        Description: Amount of coins that are rewarded upon victory.
+#        Default:     Default  = 2
+#
+
+BrawlersGuild.CoinsVictoryReward = 2
+
+#
+#    BrawlersGuild.Gambler
+#        Description: Enable or Disable the coin gambling. (Chip)
+#        Default:     Default  = 1
+#
+
+BrawlersGuild.Gambler = 1
+
+############## Rank settings ##############
+
+#
+#    BrawlersGuild.RankRequired
+#        Description: Required rank points to progress to next rank.
+#        Default:     Default  = 10
+#
+
+BrawlersGuild.RankRequired = 10
+
+#
+#    BrawlersGuild.RankWin
+#        Description: Rank points rewarded upon victory.
+#        Default:     Default  = 1
+#
+
+BrawlersGuild.RankWin = 1
+
+#
+#    BrawlersGuild.RankLose
+#        Description: Rank points lost upon defeat. (0 to disable)
+#        Default:     Default  = 2
+#
+
+BrawlersGuild.RankLose = 2
+
+############## Fight settings ##############
+
+#
+#    BrawlersGuild.FightDuration
+#        Description: Maximum allowed duration of every fight
+#        Default:     Default  = 120 (seconds)
+#
+#    If changed some SAI scripts also need to be altered (summon durations mostly)
+#
+
+BrawlersGuild.FightDuration = 120
+
+############## Challenge Cards & Rare settings (NYI) ##############
+
+#
+#    BrawlersGuild.RareEnable
+#        Description: Enable or Disable rare spawns
+#        Default:     Default  = 0
+#
+
+BrawlersGuild.RareEnable = 0
+
+#
+#    BrawlersGuild.RarePercent
+#        Description: Percentage to spawn a rare.
+#        Default:     Default  = 0
+#
+
+BrawlersGuild.RarePercent = 0
+
+############## Arena Settings (NYI) ##############
+
+#
+#    BrawlersGuild.ArenaRandomize
+#        Description: Enable or Disable randomizing arena. (Obstacles)
+#        Default:     Default  = 0
+#
+
+BrawlersGuild.ArenaRandomize = 0
+
+#
+#    BrawlersGuild.ArenaHazard
+#        Description: Enable or Disable arena hazards.
+#        Default:     Default  = 0
+#
+
+BrawlersGuild.ArenaHazard = 0

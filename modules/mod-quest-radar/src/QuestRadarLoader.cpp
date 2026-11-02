@@ -158,7 +158,7 @@ public:
     {
         if (!sQuestRadarConfig.Enabled)
         {
-            handler->PSendSysMessage("|cffffcc00[任务雷达]|r 模块已禁用（QuestRadar.Enable = 0）。");
+            handler->PSendSysMessage("|cffffcc00[任务雷达]|r 模块未启用（QuestRadar.Enable = 0）。");
             return true;
         }
 

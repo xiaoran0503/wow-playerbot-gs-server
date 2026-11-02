@@ -114,9 +114,9 @@ void AttunementSkip::SendAttunementMail(Player* player, std::vector<std::pair<ui
     if (itemsToSend.empty())
         return;
 
-    // Build mail (本服汉化: 邮件主题/正文改为简体中文)
-    std::string subject = "你的准入副本钥匙";
-    std::string body = "你好，\n\n你已达到 " + std::to_string(levelThreshold) + " 级，我们将以下准入道具寄送给你，方便你进入团队副本：\n\n";
+    // Build mail
+    std::string subject = "Your Attunement Items";
+    std::string body = "Greetings,\n\nAs you have reached level " + std::to_string(levelThreshold) + ", you have been granted the following attunement items to access raid content:\n\n";
 
     for (uint32 itemId : itemsToSend)
     {
@@ -125,7 +125,7 @@ void AttunementSkip::SendAttunementMail(Player* player, std::vector<std::pair<ui
             body += "- " + std::string(itemProto->Name1) + "\n";
     }
 
-    body += "\n这些道具是进入团队副本的必需物品。祝冒险顺利！\n";
+    body += "\nThese items are required for raid entry. Good luck!\n";
 
     MailDraft draft(subject, body);
 

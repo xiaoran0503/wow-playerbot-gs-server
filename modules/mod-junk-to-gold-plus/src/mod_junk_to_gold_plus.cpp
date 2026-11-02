@@ -8,13 +8,13 @@ namespace
     static char const* const ITEM_LINK_MULTIPLE = "|cff9d9d9d|Hitem:{}::::::::{}:::::|h[{}]|h|rx{}";
     static char const* const ITEM_LINK_SINGLE = "|cff9d9d9d|Hitem:{}::::::::{}:::::|h[{}]|h|r";
 
-    static char const* const SOLD_FOR_COPPER = "{} 卖出，获得 {} 铜币。";
-    static char const* const SOLD_FOR_SILVER_COPPER = "{} 卖出，获得 {} 银币 {} 铜币。";
-    static char const* const SOLD_FOR_SILVER = "{} 卖出，获得 {} 银币。";
-    static char const* const SOLD_FOR_GOLD_SILVER_COPPER = "{} 卖出，获得 {} 金 {} 银 {} 铜。";
-    static char const* const SOLD_FOR_GOLD_COPPER = "{} 卖出，获得 {} 金 {} 铜。";
-    static char const* const SOLD_FOR_GOLD_SILVER = "{} 卖出，获得 {} 金 {} 银。";
-    static char const* const SOLD_FOR_GOLD = "{} 卖出，获得 {} 金。";
+    static char const* const SOLD_FOR_COPPER = "{} 已卖出，获得 {} 铜币。";
+    static char const* const SOLD_FOR_SILVER_COPPER = "{} 已卖出，获得 {} 银币 {} 铜币。";
+    static char const* const SOLD_FOR_SILVER = "{} 已卖出，获得 {} 银币。";
+    static char const* const SOLD_FOR_GOLD_SILVER_COPPER = "{} 已卖出，获得 {} 金币 {} 银币 {} 铜币。";
+    static char const* const SOLD_FOR_GOLD_COPPER = "{} 已卖出，获得 {} 金币 {} 铜币。";
+    static char const* const SOLD_FOR_GOLD_SILVER = "{} 已卖出，获得 {} 金币 {} 银币。";
+    static char const* const SOLD_FOR_GOLD = "{} 已卖出，获得 {} 金币。";
 }
 
 class JunkToGoldPlus : public PlayerScript

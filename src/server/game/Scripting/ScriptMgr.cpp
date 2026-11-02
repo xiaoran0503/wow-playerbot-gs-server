@@ -151,7 +151,12 @@ void ScriptMgr::Unload()
 {
     Acore::for_each<ScriptRegistryTypes>([]<typename Info>()
     {
-        ScriptRegistry<typename Info::type>::Unload();
+        for (auto const& [scriptID, script] : ScriptRegistry<typename Info::type>::ScriptPointerList)
+        {
+            delete script;
+        }
+
+        ScriptRegistry<typename Info::type>::ScriptPointerList.clear();
     });
 
     delete[] SpellSummary;

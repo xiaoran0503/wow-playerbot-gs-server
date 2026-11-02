@@ -2259,10 +2259,6 @@ void WorldSession::HandleCharFactionOrRaceChangeCallback(std::shared_ptr<Charact
                     };
 
                     uint32 nodeId = itr.first;
-                    // TaxiPath.dbc has a path from node 0, which has no bit in the mask
-                    if (!nodeId || nodeId > TaxiMaskSize * 32)
-                        continue;
-
                     uint8 field = (uint8)((nodeId - 1) / 32);
                     uint32 submask = 1 << ((nodeId - 1) % 32);
 
@@ -2307,8 +2303,7 @@ void WorldSession::HandleCharFactionOrRaceChangeCallback(std::shared_ptr<Charact
                         continue;
                     }
 
-                    LocaleConstant dbcLocale = GetSessionDbcLocale();
-                    LFGDungeonEntry const* lfgDungeon = GetZoneLFGDungeonEntry(zone->area_name[dbcLocale], dbcLocale);
+                    LFGDungeonEntry const* lfgDungeon = GetZoneLFGDungeonEntry(zone->area_name[GetSessionDbLocaleIndex()], GetSessionDbLocaleIndex());
                     if (!lfgDungeon)
                     {
                         FillTaxiMask(field, 0);

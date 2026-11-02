@@ -205,7 +205,7 @@ void DynamicObject::SetDuration(int32 newDuration)
 
 void DynamicObject::Delay(int32 delaytime)
 {
-    SetDuration(std::max(GetDuration() - delaytime, 0));
+    SetDuration(GetDuration() - delaytime);
 }
 
 void DynamicObject::SetAura(Aura* aura)

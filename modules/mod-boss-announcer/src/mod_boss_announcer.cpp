@@ -73,8 +73,8 @@ public:
 
             Map* map = creature->GetMap();
 
-            std::string leaderName = "未知";
-            std::string guildName = "无公会";
+            std::string leaderName = "Unknown";
+            std::string guildName = "< 无公会 >";
 
             for (auto const& itr : map->GetPlayers())
             {
@@ -99,10 +99,10 @@ public:
                 << "|r 的公会 |cff00ff00" << guildName
                 << "|r 在 |cffff0000["
                 << creature->GetName()
-                << "]|r 团灭了，"
-                << "|cffffff00(第 " << attempt << " 次尝试)|r "
-                << "历时 " << minutes << " 分 "
-                << seconds << " 秒。";
+                << "]|r "
+                << "|cffffff00(第 " << attempt << " 次)|r "
+                << "用时 " << minutes << "分 "
+                << seconds << "秒。";
 
             sWorldSessionMgr->SendServerMessage(SERVER_MSG_STRING, wipeMsg.str().c_str());
 
@@ -124,7 +124,7 @@ public:
     {
         if (BossAnnouncerEnable && BossAnnounceToPlayerOnLogin)
             ChatHandler(player->GetSession()).SendSysMessage(
-                "本服已运行 |cff4CFF00BossAnnouncer |r模块（团灭与首领击杀公告）。");
+                "本服务器正在运行 |cff4CFF00首领公告 |r 模块。");
     }
 
     void OnPlayerCreatureKill(Player* player, Creature* boss)
@@ -156,14 +156,14 @@ public:
 
         std::string g_name = player->GetGuild() ?
             player->GetGuildName() :
-            "无公会";
+            "< 无公会 >";
 
         std::string boss_name = boss->GetName();
 
         std::string raidSize = map->Is25ManRaid() ? "25" : "10";
         std::string mode = map->IsHeroic() ?
-            "|cffff0000英雄|r" :
-            "|cff00ff00普通|r";
+            "|cffff0000Heroic|r" :
+            "|cff00ff00Normal|r";
 
         uint32 Alive_players = 0;
         uint32 Tanks = 0;
@@ -203,15 +203,15 @@ public:
             << "|r 的公会 |cff00ff00" << g_name
             << "|r 击杀了 |cffff0000["
             << boss_name << "]|r "
-            << "|cffffff00(第 " << attemptCount << " 次尝试)|r "
-            << "历时 " << minutes << " 分 "
-            << seconds << " 秒。"
+            << "|cffffff00(第 " << attemptCount << " 次)|r "
+            << "用时 " << minutes << "分 "
+            << seconds << "秒。"
             << "存活：|cff00ff00"
             << Alive_players << "/" << raidSize
-            << "|r，难度：" << mode
-            << " |cff3399ff[坦克：" << Tanks
-            << " 治疗：" << Healers
-            << " 输出：" << DPS << "]|r";
+            << "|r on " << mode
+            << " |cff3399ff[Tank:" << Tanks
+            << " Heal:" << Healers
+            << " DPS:" << DPS << "]|r";
 
         sWorldSessionMgr->SendServerMessage(SERVER_MSG_STRING, stream.str().c_str());
 

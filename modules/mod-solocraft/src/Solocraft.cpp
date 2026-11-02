@@ -454,7 +454,7 @@ public:
     void OnPlayerLogin(Player* player) override
     {
         if (SoloCraftEnable && SoloCraftAnnounceModule)
-            ChatHandler(player->GetSession()).SendSysMessage("本服已运行 |cff4CFF00SoloCraft |r单人副本强化模块。");
+            ChatHandler(player->GetSession()).SendSysMessage("本服务器正在运行 |cff4CFF00SoloCraft |r 模块。");
 
         if (!player->HasAura(SPELL_BUFF_STATS_PCT))
             player->AddAura(SPELL_BUFF_STATS_PCT, player);
@@ -830,19 +830,19 @@ public:
                     // Announce to player - Buff
                     if (!SolocraftXPEnabled)
                     {
-                        ss << "|cffFF0000[SoloCraft] |cffFF8000" << player->GetName() << " 进入 {}  - 难度补偿: {:.2f}。法术强度加成: {}。职业平衡权重: {}。 经验获取: |cffFF0000已禁用";
+                        ss << "|cffFF0000[SoloCraft] |cffFF8000" << player->GetName() << " 进入了 {}  - 难度系数：{:.2f}. 法术强度加成：{}. 职业平衡权重：{}.  经验获取：|cffFF0000已禁用";
                         ChatHandler(player->GetSession()).PSendSysMessage(ss.str().c_str(), map->GetMapName(), difficulty, SpellPowerBonus, classBalance);
                     }
                     else
                     {
                         if (!SolocraftXPBalEnabled)
                         {
-                            ss << "|cffFF0000[SoloCraft] |cffFF8000" << player->GetName() << " 进入 {}  - 难度补偿: {:.2f}。法术强度加成: {}。职业平衡权重: {}。 经验平衡: |cffFF0000已禁用";
+                            ss << "|cffFF0000[SoloCraft] |cffFF8000" << player->GetName() << " 进入了 {}  - 难度系数：{:.2f}. 法术强度加成：{}. 职业平衡权重：{}.  经验平衡：|cffFF0000已禁用";
                             ChatHandler(player->GetSession()).PSendSysMessage(ss.str().c_str(), map->GetMapName(), difficulty, SpellPowerBonus, classBalance);
                         }
                         else
                         {
-                            ss << "|cffFF0000[SoloCraft] |cffFF8000" << player->GetName() << " 进入 {}  - 难度补偿: {:.2f}。法术强度加成: {}。职业平衡权重: {}。 经验平衡: |cff4CFF00已启用";
+                            ss << "|cffFF0000[SoloCraft] |cffFF8000" << player->GetName() << " 进入了 {}  - 难度系数：{:.2f}. 法术强度加成：{}. 职业平衡权重：{}.  经验平衡：|cff4CFF00已启用";
                             ChatHandler(player->GetSession()).PSendSysMessage(ss.str().c_str(), map->GetMapName(), difficulty, SpellPowerBonus, classBalance);
                         }
                     }
@@ -852,12 +852,12 @@ public:
                     // Announce to player - Debuff
                     if (!SolocraftXPBalEnabled && SolocraftXPEnabled)
                     {
-                        ss << "|cffFF0000[SoloCraft] |cffFF8000" << player->GetName() << " 进入 {}  - |cffFF0000注意：你已被施加减益，补偿幅度: {:.2f}，职业平衡权重: {}。|cffFF8000 队伍中已有成员处于本副本的满额增益补偿状态，施法者将不会获得法术强度增益。全体队员必须离开本副本再重新进入，才能获得平衡的补偿。";
+                        ss << "|cffFF0000[SoloCraft] |cffFF8000" << player->GetName() << " 进入了 {}  - |cffFF0000注意 - 你已被削弱，削减幅度：{:.2f} with a 职业平衡权重：{}. |cffFF8000 队中已有成员在副本内，占用了该副本的全部增益额度。  法系施法者不会获得法术强度增益。  所有队员必须离开副本后重新进入，才能获得平衡后的加成。";
                         ChatHandler(player->GetSession()).PSendSysMessage(ss.str().c_str(), map->GetMapName(), difficulty, classBalance);
                     }
                     else
                     {
-                        ss << "|cffFF0000[SoloCraft] |cffFF8000" << player->GetName() << " 进入 {}  - |cffFF0000注意：你已被施加减益，补偿幅度: {:.2f}，职业平衡权重: {}，且不会获得经验。|cffFF8000 队伍中已有成员处于本副本的满额增益补偿状态，施法者将不会获得法术强度增益。全体队员必须离开本副本再重新进入，才能获得平衡的补偿。";
+                        ss << "|cffFF0000[SoloCraft] |cffFF8000" << player->GetName() << " 进入了 {}  - |cffFF0000注意 - 你已被削弱，削减幅度：{:.2f} with a 职业平衡权重：{}，且不会获得经验。 |cffFF8000 队中已有成员在副本内，占用了该副本的全部增益额度。  法系施法者不会获得法术强度增益。  所有队员必须离开副本后重新进入，才能获得平衡后的加成。";
                         ChatHandler(player->GetSession()).PSendSysMessage(ss.str().c_str(), map->GetMapName(), difficulty, classBalance);
                     }
                 }
@@ -868,7 +868,7 @@ public:
             else
             {
                 // Announce to player - Over Max Level Threshold
-                ss << "|cffFF0000[SoloCraft] |cffFF8000" << player->GetName() << " 进入 {}  - |cffFF0000你未获得增益。|cffFF8000 你的等级已超过本副本的等级上限（{}）。";
+                ss << "|cffFF0000[SoloCraft] |cffFF8000" << player->GetName() << " 进入了 {}  - |cffFF0000你未获得增益。|cffFF8000 你的等级高于此副本的最高等级（{}）门槛。";
                 ChatHandler(player->GetSession()).PSendSysMessage(ss.str().c_str(), map->GetMapName(), dunLevel + SolocraftLevelDiff);
                 ClearBuffs(player); // Check to revert player back to normal
             }

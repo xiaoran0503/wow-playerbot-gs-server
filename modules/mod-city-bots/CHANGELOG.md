@@ -1,0 +1,224 @@
+# Changelog
+
+The module was created by **deadtrickz**. This fork picks up from their build
+as deployed in July 2026 and records everything changed since, with the reason
+each change was needed. All fixes were found and verified on a live server
+(~1,500 random playerbots + the 400-bot city cast).
+
+## 2026-10-12 — stage-cast accounts stop sharing a known password
+
+- **The 400 stage-cast accounts shared one password, printed in the README and the
+  worldserver log.** Its verifiers were built with SHA-256 and a different modulus,
+  so the password never worked. Correcting that math alone would have made it work
+  on every install that imports the SQL. `2026_10_12_00_stage_cast_random_verifiers.sql`
+  creates any missing stage-cast account and gives each of the 400 a verifier for a
+  random password that is generated once and never stored. It changes no account
+  whose id and name are not a stage-cast pair.
+- `2026_07_16_03_stage_cast_one_account_per_bot.sql` is removed. It carried the shared
+  password and ran `ON DUPLICATE KEY UPDATE ... locked = 0` on ids 12001-12400. On a
+  realm where a real account held one of those ids, or a real account was named
+  `citybot12xxx` on another id, that update replaced the account's password and
+  cleared its lock. An installed copy leaves a `MODULE` row in the `updates` table,
+  which the server neither logs nor removes.
+- The password is gone from the README and the log line. One applied SQL comment still
+  names it (`2026_08_22_00`, line 12). Editing that file would re-run its re-seed on
+  every realm, so it is left as it is.
+- Known limit, not fixed: a real account on one of these ids gets that bot's characters
+  attached, and the module treats that account as a stage-cast account. A range check in
+  the importer is the fix. The file header has the details.
+- `tools/generate_stage_cast.py` is removed. It could not reproduce the shipped
+  seeds, and nothing else used it.
+
+## 2026-10-11 — builds again on the newer mod-playerbots AzerothCore
+
+- **The module no longer compiled against the current core.** AzerothCore #27533
+  renamed `WorldSession::IsBot()` to `IsHeadless()`, and mod-playerbots #2793
+  moved `PlayerbotsDatabase` out of the core's `DatabaseEnv.h` into its own
+  header, so every rebuild with City Bots installed failed. All bot-session
+  tests now go through `CbIsBotSession()` (`src/CbCoreCompat.h`), which uses
+  whichever of the two names the core has, so older and newer cores both build.
+  The `PlayerbotsDatabase.h` include comes from Lanzen92's PR #5, and the
+  file that was still missing it (`CbCitizenAccountMgr.cpp`) now has it too.
+  mod-playerbots also renamed its `PlayerbotAIConfig` settings to PascalCase
+  and removed `PlayerbotScript`: the settings are read through `CbCfg*()` and
+  the per-tick reaper is now a `WorldScript::OnUpdate`. Compiled (all 20
+  source files) against the 0.9.14 and the 0.9.16 Yu'lon core/playerbots pins.
+
+## 2026-08-28 — citizens stop bypassing playerbots' player-protection gates
+
+- **City bots took the realm firsts** (reported by Andood). mod-playerbots
+  blocks realm-first achievements in `Playerbots.cpp`
+  (`OnPlayerBeforeAchievementComplete`), but only for bots that answer true to
+  `RandomPlayerbotMgr::IsRandomBot()` / `IsAddclassBot()`. `IsRandomBot()`
+  requires the character's account to be in the random-bot account list *and*
+  the GUID to be in the live random pool. With
+  `CitizenBots.UseDedicatedAccounts = 1` the stage cast is on its own accounts
+  and in neither set, so the achievement system treated all 400 citizens as
+  real players.
+- `CityBotsPresencePlayerScript` now implements `OnPlayerBeforeAchievementComplete`
+  and `OnPlayerBeforeCriteriaProgress`, returning false for roster GUIDs. The
+  criteria hook is there so 400 bots stop writing achievement progress rows they
+  can never complete. This is deliberately wider than the guard it replaces:
+  playerbots blocks only the two realm-first flags and never touches criteria,
+  while citizens are blocked from every achievement. They lose achievement-reward
+  titles and statistics; nothing in AzerothCore or playerbots reads either as a
+  side channel (checked: playerbots only ever touches `character_achievement` to
+  delete orphans).
+- Registering the criteria hook puts `IsBlockedCitizen` on every
+  `SetCriteriaProgress` call by every character on the realm, and AzerothCore
+  runs that one on the **map update threads**, not the world thread. So the cheap
+  test runs first, and `CitizenRosterRegistry::IsRosterGuid` is now an
+  `unordered_set` lookup instead of a linear scan of 400 entries (every one of
+  its ~30 other call sites gets that for free). The registry is still loaded once
+  at startup, which is what makes the concurrent readers safe -- a future live
+  roster reload would need a lock; there is now a comment saying so.
+- New `CitizenBots.BlockAchievements` (default 1) turns the block off for owners
+  who do want bot achievements.
+- `data/sql/dev/db-characters/updates/2026_08_28_00_strip_citizen_bot_achievements.sql`
+  clears `character_achievement` / `character_achievement_progress` for GUIDs
+  9000001-9000400 on servers that already lost realm firsts. Apply it with
+  worldserver stopped: `AchievementGlobalMgr::LoadCompletedAchievements()` reads
+  the "already taken" realm-first set from `character_achievement` once at
+  startup, so the realm firsts are claimable again after the next start.
+- **Same class, second case: `AiPlayerbot.EnableRandomBotTrading` was ignored
+  for citizens.** mod-playerbots enforces it in `TradeStatusAction`
+  (`enableRandomBotTrading == 0 / 2 / 3`) behind the same `IsRandomBot()` /
+  `IsAddclassBot()` test, so a server that turned bot trading off still had 400
+  citizens trading with players. The module now enforces the owner's existing
+  setting through the core's own `OnPlayerCanInitTrade` /
+  `OnPlayerCanSetTradeItem` hooks, which hold no matter what the bot's AI does:
+  mode 0 refuses the trade window (with the same "Trading is disabled" whisper),
+  mode 2 stops a citizen putting its items in, mode 3 stops a player putting
+  items into a citizen's window. Money is untouched, matching playerbots, whose
+  2/3 checks look at item value only. No new config key — city bots follow
+  whatever playerbots was set to. The enchant slot is let through, matching
+  `CalculateCost`, which only sums the six traded slots. Two knowing
+  divergences: any item counts rather than only items playerbots' valuation
+  prices above zero (its `CalculateCost` zeroes a whole side when one item is
+  below normal quality, which lets a bot hand over greys), and modes 2/3 refuse
+  silently -- the core answers a refused item with `TRADE_STATUS_CLOSE_WINDOW` --
+  because the client re-sends `CMSG_SET_TRADE_ITEM` on every slot click and a
+  whisper there would need throttling to not be spam. Mode 0 whispers, through
+  playerbots' own `trade_disabled` text key.
+- Audited the other 75 `IsRandomBot()` / `IsAddclassBot()` gates in
+  mod-playerbots for the same bypass. The rest are opt-ins the citizens simply
+  do not get (guild tasks, `/who` trade lines, LFG role picking, BG queue
+  bookkeeping, random-bot XP rate, trade discounts), not player-facing
+  protections, so nothing else needs a mirror.
+
+## 2026-08-22 — fresh installs through the database updater
+
+- **Fresh installs failed in the core updater** (issue #1, reported by
+  DeadTrickz and notacoder-dev). Root cause, confirmed from the AzerothCore
+  Playerbot-branch source: worldserver updates auth, then characters, then
+  world, and mod-playerbots updates `acore_playerbots` last with its own
+  loader that never scans other modules. Six `db-characters` updates joined
+  `acore_playerbots.citizen_roster` (two also `acore_world.city_bot_poi`), so
+  on an empty database the updater hit "table doesn't exist" and worldserver
+  aborted. The C++ was never the crash; it already tolerates an empty roster.
+- `db-characters` is now two self-contained seeds
+  (`2026_08_22_00_stage_cast_characters.sql`, `2026_08_22_01_stage_cast_outfits.sql`)
+  holding the final state the old 15-file chain produced. Verified on a throwaway
+  MySQL 8.4 with the AC base schema: updater order on a fresh database succeeds
+  and the resulting `acore_characters` is byte-identical to the old chain applied
+  in the working order; reapplying is a no-op; an already-occupied equipment
+  slot is left alone.
+- `data/sql/playerbots/updates/2026_07_15_00_citizen_roster.sql` still has to be
+  imported by hand before the first start; README now says so plainly instead
+  of "preferred: auto-updater".
+- `2026_08_11_01_sync_citizen_roster_race_classes.sql` moved under `data/sql/dev`
+  (existing-database repair; its roster values were already in the roster seed).
+- Startup log lines now name the shipped files instead of deleted ones
+  (`src/CbShippedSql.h`); `conf/*.conf*` no longer point at a file that never
+  shipped; `tools/generate_stage_cast.py` now writes to `tools/out/` only.
+- Upgrading an existing server: the two new files run once and DELETE+INSERT
+  the 400 stage-cast `characters` rows, homebinds and starter outfits, so the
+  cast's saved positions, explored zones, taxi nodes and honor/kill counters
+  reset to the shipped state. A customized roster needs the dev re-sync
+  afterwards (README, Install step 4).
+- Verified later the same day on a fresh Playerbots stack built from source
+  (wow-manage install path): updater applied all six module files, roster
+  import, module up, city bots logging in.
+- **Validator no longer calls a config-filtered roster a missing import.** With
+  `CitizenBots.Assign.RequireListed=1` and the nine `conf.dist` assignments the
+  faction guard refuses, 391 of 400 rows load and the startup check said
+  "roster has 391/400 entries — re-import the roster" right after a correct
+  import. The registry now tracks table rows / disabled / unlisted-or-refused
+  counts; the check errors only when the TABLE is short (or present but 0 active,
+  which it now names as a conf problem), otherwise logs an Info line with the
+  counts and the real `RequireListed` value. Open follow-up: those nine
+  wrong-faction entries in `conf.dist` (4 Alliance in `OrgrimmarGate.Duelers`,
+  5 Horde in `Goldshire.AmbientBurst`) should be reassigned so fresh installs
+  reach 400/400.
+
+## 2026-08 — the movement-hardening campaign
+
+### The frozen-city fix (the big one)
+- **Citizens froze completely** — staged at their spots, then never moved
+  again. Root cause: roster citizens are removed from the random-bot list, so
+  the playerbots engine never runs their AI update — and a bot teleport only
+  completes when the AI acknowledges it. The login-staging teleport therefore
+  wedged every citizen in "being teleported" forever, and every behavior
+  driver silently skipped them. The gate now completes pending teleport acks
+  itself. This also fixed the long-standing far-continent (Shattrath)
+  placement hang — same missing ack.
+
+### Water: the real "swimming under the city" mechanism
+- Bots kept ending up on the water table under Orgrimmar and in the Stormwind
+  canals. A day of movement forensics showed why: AzerothCore's pathfinder
+  treats water polygons as walkable for players, so a citizen's shortest
+  route across a city legitimately runs **through** ponds and canals — and
+  from the under-city water plane there is no walkable way back out. Every
+  move order the module issues now refuses a route whose points (or segment
+  midpoints, or an incomplete path's tail) touch liquid.
+
+### No more flying / wall-clipping
+- When pathfinding failed, the engine's fallback walked bots in a straight
+  line — through the air across Orgrimmar, through walls, through floors.
+  Every module-issued move now requires a real navmesh path; long routes are
+  walked in validated legs (following the mesh's own partial route, so ramps
+  and bridges are used); unreachable spots are simply not traveled to.
+
+### Self-healing rescues
+- Any citizen standing below every nearby curated POI, standing in water
+  (non-fishers), or unable to path anywhere three tries in a row is
+  re-staged to its home spot within seconds — through a resolver that rejects
+  under-floor and in-water placements, and prefers nearby on-level dry
+  ground over exact coordinates (no more "standing inside the wall" after a
+  rescue).
+
+### Faction safety
+- The config assignment sheet could place a citizen at an enemy-faction home
+  (four Alliance citizens ended up as Orgrimmar-gate duelers → open faction
+  PvP at the duel hub; Goldshire had Horde "residents" brawling with
+  guards). Wrong-faction assignments are now refused with a log warning.
+  Shattrath and Dalaran stay mixed, as neutral cities should.
+
+### Living-crowd scenes (new feature)
+- Burst-gated bank/auction-house crowds in Stormwind and Orgrimmar: citizens
+  linger, go AFK, wander to the paired bank/AH and back, and hold short
+  paired `/say` conversations — only while a real player is nearby, so idle
+  servers pay nothing. Ported to the direct driving path so it works on
+  playerbots forks where the per-bot AI context does not attach.
+
+### Under-mesh staging fixes
+- Teleport placement rejects height resolves that land under the floor (WMO
+  cities have terrain and a water plane *underneath* the walkable floors);
+  every citizen is re-staged through the fixed resolver at login.
+
+### Dueler quality
+- Level-80 boosted duelers used to fight with fresh-character spellbooks
+  (4 spells at 80); they now get full class spellbooks on preparation.
+- Real players walking near duel POIs are no longer movement-steered like
+  citizens.
+
+### Diagnostics that made all of this findable
+- Per-bot status and staging lines at LogLevel 2; movement decision traces
+  and plunge forensics (which order a sinking bot was following) at
+  LogLevel 3. When something breaks, the log now says where and why.
+
+## 2026-07 — deadtrickz's original build
+
+The fixed 400-bot stage cast, deterministic SQL generation, per-city POI
+tables, the assignment sheet, duel hubs with paired reservations, fishers,
+inn dancers, plaza talkers — the whole design this fork builds on.

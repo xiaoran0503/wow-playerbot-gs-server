@@ -1,6 +1,6 @@
 
 SET @TEXT_ID = 197760,
-@TEXT= '想下副本？我走遍了全世界，能把你送到任何想去的地方。至于去了你不该去的地方而发生的伤亡，本人概不负责。';
+@TEXT= 'You want to go to a dungeon? I have explored all over the world and can get you where you need to go. I am not responsible for any death or dismemberment that may occure by going where you shouldn\'t';
 
 
 

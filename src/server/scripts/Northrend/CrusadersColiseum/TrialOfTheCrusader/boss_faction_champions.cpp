@@ -41,8 +41,7 @@ struct boss_faction_championsAI : public ScriptedAI
     boss_faction_championsAI(Creature* pCreature, uint32 aitype) : ScriptedAI(pCreature)
     {
         pInstance = pCreature->GetInstanceScript();
-        // pets are summoned mid-fight, the instance only releases the champions
-        me->SetReactState(aitype == AI_PET ? REACT_AGGRESSIVE : REACT_PASSIVE);
+        me->SetReactState(REACT_PASSIVE);
         mAIType = aitype;
         threatTimer = 2000;
         powerTimer = 1000;
@@ -975,7 +974,7 @@ public:
                 case 0:
                     break;
                 case EVENT_SPELL_SUMMON_FELHUNTER:
-                    DoSummon(NPC_ZHAAGRYM, *me);
+                    DoSummon(35465, *me);
 
                     break;
                 case EVENT_SPELL_HELLFIRE:
@@ -1266,7 +1265,7 @@ public:
                 case 0:
                     break;
                 case EVENT_SPELL_CALL_PET:
-                    DoSummon(NPC_CAT, *me);
+                    DoSummon(35610, *me);
 
                     break;
                 case EVENT_SPELL_AIMED_SHOT:

@@ -1,9 +1,9 @@
 DELETE FROM `module_string` WHERE `module`='mod-quest-loot-party';
-INSERT INTO `module_string` (`module`, `id`, `string`) VALUES
+INSERT IGNORE INTO `module_string` (`module`, `id`, `string`) VALUES
 ('mod-quest-loot-party', 1, 'This server is running the |cff4CFF00Quest Loot Party |rmodule.');
 
 DELETE FROM `module_string_locale` WHERE `module`='mod-quest-loot-party';
-INSERT INTO `module_string_locale` (`module`, `id`, `locale`, `string`) VALUES
+INSERT IGNORE INTO `module_string_locale` (`module`, `id`, `locale`, `string`) VALUES
 ('mod-quest-loot-party', 1, 'koKR', '이 서버는 |cff4CFF00Quest Loot Party |r모듈을 실행 중입니다.'),
 ('mod-quest-loot-party', 1, 'frFR', 'Ce serveur utilise le module |cff4CFF00Quest Loot Party|r.'),
 ('mod-quest-loot-party', 1, 'deDE', 'Dieser Server verwendet das |cff4CFF00Quest Loot Party |rModul.'),

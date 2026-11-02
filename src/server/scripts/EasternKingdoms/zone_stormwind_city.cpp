@@ -485,10 +485,13 @@ struct npc_king_varian_wrynn : public ScriptedAI
         DoMeleeAttackIfReady();
     }
 
-    void sQuestReward(Player* player, Quest const* quest, uint32 /*opt*/) override
+    bool OnQuestReward(Player* player, Creature* /*creature*/, Quest const* quest, uint32 /*item*/)
     {
+
         if (quest->GetQuestId() == QUEST_WHERE_KINGS_WALK)
             sLFGMgr->InitializeLockedDungeons(player);
+
+        return true;
     }
 };
 

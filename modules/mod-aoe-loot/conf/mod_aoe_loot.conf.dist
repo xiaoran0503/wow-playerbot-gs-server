@@ -62,3 +62,11 @@ AOELoot.Group = 1
 #
 
 AOELoot.MailEnable = 0
+
+#
+#    AOELoot.MaxCorpses
+#        Description: Maximum number of corpses handled in one AoE loot pass.
+#        Default:     20
+#
+
+AOELoot.MaxCorpses = 20

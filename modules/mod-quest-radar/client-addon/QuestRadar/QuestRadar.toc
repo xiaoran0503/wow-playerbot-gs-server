@@ -1,6 +1,10 @@
 ## Interface: 30300
 ## Title: Quest Radar
+## Title-zhCN: 任务雷达
+## Title-zhTW: 任務雷達
 ## Notes: Cataclysm-style quest objectives on the WotLK 3.3.5 minimap
+## Notes-zhCN: 在 3.3.5 小地图上显示大灾变风格的任务目标图标
+## Notes-zhTW: 在 3.3.5 小地圖上顯示浩劫與重生風格的任務目標圖示
 ## Author: Warblups
 ## Version: 0.9.0
 ## SavedVariables: QuestRadarDB
@@ -8,6 +12,7 @@
 
 Libs\Astrolabe\Load.xml
 
+Localization.lua
 QuestRadar.lua
 Sync.lua
 Options.lua

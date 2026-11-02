@@ -5,20 +5,18 @@ DELETE FROM `acore_string` WHERE `entry` BETWEEN 11100 AND 11121;
 
 DELETE FROM `module_string` WHERE `module` = 'mod-transmog';
 DELETE FROM `module_string_locale` WHERE `module` = 'mod-transmog';
-INSERT INTO `module_string` (`module`, `id`, `string`) VALUES
--- Transmog result strings
-('mod-transmog',  1, 'Item successfully transmogrified.'),
-('mod-transmog',  2, 'Equipment slot is empty.'),
-('mod-transmog',  3, 'Invalid source item selected.'),
-('mod-transmog',  4, 'Source item does not exist.'),
-('mod-transmog',  5, 'Destination item does not exist.'),
-('mod-transmog',  6, 'Selected items are invalid.'),
-('mod-transmog',  7, 'You don''t have enough money.'),
-('mod-transmog',  8, 'You don''t have enough tokens.'),
-('mod-transmog',  9, 'All your transmogrifications were removed.'),
+INSERT IGNORE INTO `module_string` (`module`, `id`, `string`) VALUES
+('mod-transmog', 1, 'Item successfully transmogrified.'),
+('mod-transmog', 2, 'Equipment slot is empty.'),
+('mod-transmog', 3, 'Invalid source item selected.'),
+('mod-transmog', 4, 'Source item does not exist.'),
+('mod-transmog', 5, 'Destination item does not exist.'),
+('mod-transmog', 6, 'Selected items are invalid.'),
+('mod-transmog', 7, 'You don''t have enough money.'),
+('mod-transmog', 8, 'You don''t have enough tokens.'),
+('mod-transmog', 9, 'All your transmogrifications were removed.'),
 ('mod-transmog', 10, 'No transmogrification found.'),
 ('mod-transmog', 11, 'Invalid name inserted.'),
--- Command strings
 ('mod-transmog', 12, 'Showing transmogrified items, relog to update the current area.'),
 ('mod-transmog', 13, 'Hiding transmogrified items, relog to update the current area.'),
 ('mod-transmog', 14, 'The selected item is not suitable for transmogrification.'),
@@ -27,7 +25,6 @@ INSERT INTO `module_string` (`module`, `id`, `string`) VALUES
 ('mod-transmog', 17, 'Appearance sync complete.'),
 ('mod-transmog', 18, 'The transmog NPC will now display available appearances as a vendor interface, allowing preview. \nDISCLAIMER: If you have too many appearances, some will not be displayed due to a client limitation. In that case, disable this option.'),
 ('mod-transmog', 19, 'The transmog NPC will now display available appearances as gossip list.'),
--- Gossip/UI strings
 ('mod-transmog', 20, 'How does transmogrification work?'),
 ('mod-transmog', 21, 'Manage sets'),
 ('mod-transmog', 22, 'Remove all transmogrifications'),
@@ -51,24 +48,19 @@ INSERT INTO `module_string` (`module`, `id`, `string`) VALUES
 ('mod-transmog', 40, 'Previous Page'),
 ('mod-transmog', 41, 'Next Page'),
 ('mod-transmog', 42, 'has been added to your appearance collection.'),
--- Disclaimer strings
 ('mod-transmog', 43, '|cFF4DB3FFSet bonuses won''t appear in the item tooltip while transmogrified, but they are still fully active.\nTo stop seeing this notice, type |cFFFFFFFF.transmog disclaimer off|cFF4DB3FF.|r'),
 ('mod-transmog', 44, 'Set bonus disclaimer enabled.'),
 ('mod-transmog', 45, 'Set bonus disclaimer disabled.'),
--- Check command: header / info
 ('mod-transmog', 46, '=== Transmog Diagnostic ==='),
 ('mod-transmog', 47, 'Destination  : {}'),
 ('mod-transmog', 48, 'Source       : {}'),
 ('mod-transmog', 49, 'Player       : {}'),
 ('mod-transmog', 50, 'Player ''{}'' not found'),
--- Check command: section labels
 ('mod-transmog', 51, '--- Pair Checks ---'),
 ('mod-transmog', 52, '--- Item: {} ---'),
 ('mod-transmog', 53, '--- Collection ---'),
--- Check command: verdict
 ('mod-transmog', 54, '=== RESULT: CAN transmog ==='),
 ('mod-transmog', 55, '=== RESULT: CANNOT transmog ==='),
--- Check command: pair fail messages
 ('mod-transmog', 56, 'Same item ID — cannot transmog an item onto itself'),
 ('mod-transmog', 57, 'Identical display ID — appearance already matches'),
 ('mod-transmog', 58, 'Item class mismatch — both must be armor or both must be weapon'),
@@ -77,7 +69,6 @@ INSERT INTO `module_string` (`module`, `id`, `string`) VALUES
 ('mod-transmog', 61, 'Ranged weapon type mismatch — cannot mix ranged and melee'),
 ('mod-transmog', 62, 'Subclass mismatch — not allowed'),
 ('mod-transmog', 63, 'Inventory type mismatch — not allowed'),
--- Check command: per-item fail messages
 ('mod-transmog', 64, 'Whitelisted — all requirement checks are bypassed'),
 ('mod-transmog', 65, 'Item class must be armor or weapon'),
 ('mod-transmog', 66, 'Blacklisted — cannot be used for transmogrification'),
@@ -92,10 +83,8 @@ INSERT INTO `module_string` (`module`, `id`, `string`) VALUES
 ('mod-transmog', 75, 'Required skill {} at rank {} — not met (have: {})'),
 ('mod-transmog', 76, 'Level requirement not met (need: {}, have: {})'),
 ('mod-transmog', 77, 'Required spell {} is not known'),
--- Check command: collection fail messages
 ('mod-transmog', 78, 'Collection system disabled'),
 ('mod-transmog', 79, 'Appearance is NOT in player''s collection'),
--- Check command: section pass message
 ('mod-transmog', 80, 'All checks passed');
 
 INSERT INTO `module_string_locale` (`module`, `id`, `locale`, `string`) VALUES
@@ -778,5 +767,5 @@ INSERT INTO `module_string_locale` (`module`, `id`, `locale`, `string`) VALUES
 
 -- Check command table entry
 DELETE FROM `command` WHERE `name` = 'transmog check';
-INSERT INTO `command` (`name`, `security`, `help`) VALUES
+INSERT IGNORE INTO `command` (`name`, `security`, `help`) VALUES
 ('transmog check', 2, 'Syntax: .transmog check $player $destItem $srcItem\nRuns a full diagnostic on whether $srcItem can be applied as appearance on $destItem for $player.\nWorks for offline players and from console.\nOutputs one summary line per section showing failures only.');

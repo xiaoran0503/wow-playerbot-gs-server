@@ -107,7 +107,7 @@ void QuestRadar_AnnounceNearbyObjectives(Player* player, uint32 maxCount)
 
     if (objectives.empty())
     {
-        handler.PSendSysMessage("|cffffcc00[任务雷达]|r 当前地图上没有可定位的任务目标。");
+        handler.PSendSysMessage("|cffffcc00[任务雷达]|r 当前地图没有可定位的任务目标。");
         return;
     }
 
@@ -127,7 +127,7 @@ void QuestRadar_AnnounceNearbyObjectives(Player* player, uint32 maxCount)
             continue;
         announcedQuestIds.push_back(obj.questId);
 
-        handler.PSendSysMessage("|cffffcc00[任务雷达]|r {} — {} 码（X: {:.1f}, Y: {:.1f}）",
+        handler.PSendSysMessage("|cffffcc00[任务雷达]|r {} - {} 码（X: {:.1f}, Y: {:.1f}）",
             obj.questTitle, uint32(obj.distance), obj.x, obj.y);
         ++shown;
     }

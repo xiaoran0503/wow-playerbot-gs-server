@@ -60,7 +60,7 @@ bool AutoBalance_CommandScript::HandleABMapStatsCommand(ChatHandler* handler, co
         // if (!mapABInfo->enabled) { return true; }
 
         // Player stats
-        handler->PSendSysMessage("Players on map: {} (Lvl {} - {})",
+        handler->PSendSysMessage("本地图玩家：{}（等级 {} - {}）",
             mapABInfo->playerCount,
             mapABInfo->lowestPlayerLevel,
             mapABInfo->highestPlayerLevel

@@ -1,0 +1,66 @@
+#
+# Copyright (C) 2016+ AzerothCore <www.azerothcore.org>, released under GNU AGPL v3 license: https://github.com/azerothcore/azerothcore-wotlk/blob/master/LICENSE-AGPL3
+#
+
+[worldserver]
+
+########################################
+# Raid Progression Tracker configuration
+########################################
+#
+#    RaidTracker.Enable
+#        Description: Master switch for the module.
+#        Default:     1 - Enabled
+#                     0 - Disabled
+#
+#    RaidTracker.CreditEntireGroup
+#        Description: Credit every eligible group member present at the kill,
+#                     not only the player who landed the killing blow.
+#        Default:     1 - Enabled
+#                     0 - Only the killer is credited
+#
+#    RaidTracker.TrackDungeons
+#        Description: Track boss kills in 5-man dungeons (content_type 0).
+#        Default:     1 - Enabled
+#                     0 - Disabled
+#
+#    RaidTracker.TrackRaids
+#        Description: Track boss kills in raids, including the mod-individual-progression
+#                     40-man Classic versions (content_type 1).
+#        Default:     1 - Enabled
+#                     0 - Disabled
+#
+#    RaidTracker.TrackWorldBosses
+#        Description: Track world-boss kills on open-world maps (content_type 2).
+#        Default:     1 - Enabled
+#                     0 - Disabled
+#
+#    RaidTracker.RequireBossFlag
+#        Description: For dungeons/raids, only count creatures that look like a boss
+#                     (dungeon-boss flag, world-boss flag, an instance_encounters
+#                     credit creature, or a raid_tracker_boss_npc entry). World
+#                     bosses always qualify by their flag.
+#                     Disabling counts every creature in the instance (not recommended).
+#        Default:     1 - Enabled
+#                     0 - Disabled
+#
+#    RaidTracker.WorldBossCreditRadius
+#        Description: For world bosses only, the maximum distance (yards) a group member
+#                     may be from the boss to be credited. Prevents crediting members
+#                     questing elsewhere on the same continent.
+#        Default:     200.0
+#
+#    RaidTracker.IncludeBots
+#        Description: Whether bot players (e.g. Playerbots) are credited in the fan-out.
+#        Default:     1 - Bots are credited
+#                     0 - Bots are skipped
+#
+
+RaidTracker.Enable = 1
+RaidTracker.CreditEntireGroup = 1
+RaidTracker.TrackDungeons = 1
+RaidTracker.TrackRaids = 1
+RaidTracker.TrackWorldBosses = 1
+RaidTracker.RequireBossFlag = 1
+RaidTracker.WorldBossCreditRadius = 200.0
+RaidTracker.IncludeBots = 1

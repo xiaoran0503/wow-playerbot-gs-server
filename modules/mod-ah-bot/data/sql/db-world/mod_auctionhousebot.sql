@@ -3,7 +3,7 @@
 --
 
 DROP TABLE IF EXISTS `mod_auctionhousebot`;
-CREATE TABLE `mod_auctionhousebot` (
+CREATE TABLE IF NOT EXISTS `mod_auctionhousebot` (
   `auctionhouse` int(11) NOT NULL DEFAULT '0' COMMENT 'mapID of the auctionhouse.',
   `name` char(25) DEFAULT NULL COMMENT 'Text name of the auctionhouse.',
   `minitems` int(11) DEFAULT '0' COMMENT 'This is the minimum number of items you want to keep in the auction house. a 0 here will make it the same as the maximum.',
@@ -73,18 +73,17 @@ CREATE TABLE `mod_auctionhousebot` (
 -- AHBot auction houses default configuration values
 --
 
-INSERT INTO `mod_auctionhousebot` (`auctionhouse`, `name`, `minitems`, `maxitems`, `percentgreytradegoods`, `percentwhitetradegoods`, `percentgreentradegoods`, `percentbluetradegoods`, `percentpurpletradegoods`, `percentorangetradegoods`, `percentyellowtradegoods`, `percentgreyitems`, `percentwhiteitems`, `percentgreenitems`, `percentblueitems`, `percentpurpleitems`, `percentorangeitems`, `percentyellowitems`, `minpricegrey`, `maxpricegrey`, `minpricewhite`, `maxpricewhite`, `minpricegreen`, `maxpricegreen`, `minpriceblue`, `maxpriceblue`, `minpricepurple`, `maxpricepurple`, `minpriceorange`, `maxpriceorange`, `minpriceyellow`, `maxpriceyellow`, `minbidpricegrey`, `maxbidpricegrey`, `minbidpricewhite`, `maxbidpricewhite`, `minbidpricegreen`, `maxbidpricegreen`, `minbidpriceblue`, `maxbidpriceblue`, `minbidpricepurple`, `maxbidpricepurple`, `minbidpriceorange`, `maxbidpriceorange`, `minbidpriceyellow`, `maxbidpriceyellow`, `maxstackgrey`, `maxstackwhite`, `maxstackgreen`, `maxstackblue`, `maxstackpurple`, `maxstackorange`, `maxstackyellow`, `buyerpricegrey`, `buyerpricewhite`, `buyerpricegreen`, `buyerpriceblue`, `buyerpricepurple`, `buyerpriceorange`, `buyerpriceyellow`, `buyerbiddinginterval`, `buyerbidsperinterval`)
-VALUES
-(2,'Alliance',250,250,0,27,12,10,1,0,0,0,10,30,8,2,0,0,100,150,150,250,800,1400,1250,1750,2250,4550,3250,5550,5250,6550,70,100,70,100,80,100,75,100,80,100,80,100,80,100,0,0,3,2,1,1,1,1,3,5,12,15,20,22,1,1),
-(6,'Horde',250,250,0,27,12,10,1,0,0,0,10,30,8,2,0,0,100,150,150,250,800,1400,1250,1750,2250,4550,3250,5550,5250,6550,70,100,70,100,80,100,75,100,80,100,80,100,80,100,0,0,3,2,1,1,1,1,3,5,12,15,20,22,1,1),
-(7,'Neutral',250,250,0,27,12,10,1,0,0,0,10,30,8,2,0,0,100,150,150,250,800,1400,1250,1750,2250,4550,3250,5550,5250,6550,70,100,70,100,80,100,75,100,80,100,80,100,80,100,0,0,3,2,1,1,1,1,3,5,12,15,20,22,1,1);
+INSERT IGNORE INTO `mod_auctionhousebot` (`auctionhouse`, `name`, `minitems`, `maxitems`, `percentgreytradegoods`, `percentwhitetradegoods`, `percentgreentradegoods`, `percentbluetradegoods`, `percentpurpletradegoods`, `percentorangetradegoods`, `percentyellowtradegoods`, `percentgreyitems`, `percentwhiteitems`, `percentgreenitems`, `percentblueitems`, `percentpurpleitems`, `percentorangeitems`, `percentyellowitems`, `minpricegrey`, `maxpricegrey`, `minpricewhite`, `maxpricewhite`, `minpricegreen`, `maxpricegreen`, `minpriceblue`, `maxpriceblue`, `minpricepurple`, `maxpricepurple`, `minpriceorange`, `maxpriceorange`, `minpriceyellow`, `maxpriceyellow`, `minbidpricegrey`, `maxbidpricegrey`, `minbidpricewhite`, `maxbidpricewhite`, `minbidpricegreen`, `maxbidpricegreen`, `minbidpriceblue`, `maxbidpriceblue`, `minbidpricepurple`, `maxbidpricepurple`, `minbidpriceorange`, `maxbidpriceorange`, `minbidpriceyellow`, `maxbidpriceyellow`, `maxstackgrey`, `maxstackwhite`, `maxstackgreen`, `maxstackblue`, `maxstackpurple`, `maxstackorange`, `maxstackyellow`, `buyerpricegrey`, `buyerpricewhite`, `buyerpricegreen`, `buyerpriceblue`, `buyerpricepurple`, `buyerpriceorange`, `buyerpriceyellow`, `buyerbiddinginterval`, `buyerbidsperinterval`) VALUES
+(2, 'Alliance', 250, 250, 0, 27, 12, 10, 1, 0, 0, 0, 10, 30, 8, 2, 0, 0, 100, 150, 150, 250, 800, 1400, 1250, 1750, 2250, 4550, 3250, 5550, 5250, 6550, 70, 100, 70, 100, 80, 100, 75, 100, 80, 100, 80, 100, 80, 100, 0, 0, 3, 2, 1, 1, 1, 1, 3, 5, 12, 15, 20, 22, 1, 1),
+(6, 'Horde', 250, 250, 0, 27, 12, 10, 1, 0, 0, 0, 10, 30, 8, 2, 0, 0, 100, 150, 150, 250, 800, 1400, 1250, 1750, 2250, 4550, 3250, 5550, 5250, 6550, 70, 100, 70, 100, 80, 100, 75, 100, 80, 100, 80, 100, 80, 100, 0, 0, 3, 2, 1, 1, 1, 1, 3, 5, 12, 15, 20, 22, 1, 1),
+(7, 'Neutral', 250, 250, 0, 27, 12, 10, 1, 0, 0, 0, 10, 30, 8, 2, 0, 0, 100, 150, 150, 250, 800, 1400, 1250, 1750, 2250, 4550, 3250, 5550, 5250, 6550, 70, 100, 70, 100, 80, 100, 75, 100, 80, 100, 80, 100, 80, 100, 0, 0, 3, 2, 1, 1, 1, 1, 3, 5, 12, 15, 20, 22, 1, 1);
 
 --
 -- Items blacklist
 --
 
 DROP TABLE IF EXISTS `mod_auctionhousebot_disabled_items`;
-CREATE TABLE `mod_auctionhousebot_disabled_items` (
+CREATE TABLE IF NOT EXISTS `mod_auctionhousebot_disabled_items` (
   `item` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`item`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -93,7 +92,7 @@ CREATE TABLE `mod_auctionhousebot_disabled_items` (
 -- Blacklist default values
 --
 
-INSERT INTO `mod_auctionhousebot_disabled_items`
+INSERT IGNORE INTO `mod_auctionhousebot_disabled_items`
 VALUES
 (17), (3895), (1700), (862), (4196), (3934), (2275), (4213), (4988), (4989), (4990), (4110), (4111), (4116), (3463), (3068),
 (913), (2016), (3738), (1189), (3222), (2664), (2273), (4763), (2444), (1041), (1133), (1134), (2413), (2415), (2927), (2932),

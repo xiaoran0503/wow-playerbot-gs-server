@@ -9,6 +9,7 @@
 -- third-party dependency, matching the rest of the addon.
 
 local QR = QuestRadar
+local L = QR.L
 
 local panel = CreateFrame("Frame", "QuestRadarOptionsPanel", UIParent)
 panel.name = "QuestRadar"
@@ -21,7 +22,7 @@ local subtitle = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"
 subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
 subtitle:SetPoint("RIGHT", panel, "RIGHT", -16, 0)
 subtitle:SetJustifyH("LEFT")
-subtitle:SetText("Objectifs de quete sur le minimap. Ces reglages sont aussi accessibles via /qr.")
+subtitle:SetText(L["Objectifs de quete sur le minimap. Ces reglages sont aussi accessibles via /qr."])
 
 -- 3.3.5 templates expose their label as the global <name>Text; newer ones use
 -- the parentKey. Handle both so this survives a template change.
@@ -51,20 +52,20 @@ local function CreateCheckbox(key, anchor, label, tooltip)
     return check
 end
 
-local enabled = CreateCheckbox("enabled", subtitle, "Activer QuestRadar",
-    "Affiche ou masque completement les icones d'objectifs.")
+local enabled = CreateCheckbox("enabled", subtitle, L["Activer QuestRadar"],
+    L["Affiche ou masque completement les icones d'objectifs."])
 
-local onlyTracked = CreateCheckbox("onlyTracked", enabled, "Limiter aux quetes suivies",
-    "N'affiche que les quetes cochees dans le suivi d'objectifs. Decoche, affiche toutes les quetes de la zone.")
+local onlyTracked = CreateCheckbox("onlyTracked", enabled, L["Limiter aux quetes suivies"],
+    L["N'affiche que les quetes cochees dans le suivi d'objectifs. Decoche, affiche toutes les quetes de la zone."])
 
-local showCompleted = CreateCheckbox("showCompleted", onlyTracked, "Afficher les quetes terminees",
-    "Affiche l'icone de rendu (?) pour les quetes pretes a etre rendues.")
+local showCompleted = CreateCheckbox("showCompleted", onlyTracked, L["Afficher les quetes terminees"],
+    L["Affiche l'icone de rendu (?) pour les quetes pretes a etre rendues."])
 
-local showOffscreen = CreateCheckbox("showOffscreen", showCompleted, "Afficher les objectifs hors de portee",
-    "Les objectifs trop loin se collent au bord du minimap, legerement attenues.")
+local showOffscreen = CreateCheckbox("showOffscreen", showCompleted, L["Afficher les objectifs hors de portee"],
+    L["Les objectifs trop loin se collent au bord du minimap, legerement attenues."])
 
-local useModule = CreateCheckbox("useModule", showOffscreen, "Utiliser le module serveur si present",
-    "Avec le module mod-quest-radar sur le royaume : une icone par objectif au lieu d'une par quete. Sans lui, aucun effet.")
+local useModule = CreateCheckbox("useModule", showOffscreen, L["Utiliser le module serveur si present"],
+    L["Avec le module mod-quest-radar sur le royaume : une icone par objectif au lieu d'une par quete. Sans lui, aucun effet."])
 
 -- Icon size. The slider is only committed on release: dragging it would
 -- otherwise rebuild every icon on each pixel of travel.
@@ -82,7 +83,7 @@ if scaleHigh then scaleHigh:SetText("3") end
 
 local function UpdateScaleLabel(value)
     if scaleText then
-        scaleText:SetText(string.format("Taille des icones : %.1f", value))
+        scaleText:SetText(string.format(L["Taille des icones : %.1f"], value))
     end
 end
 
