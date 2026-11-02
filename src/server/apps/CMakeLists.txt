@@ -111,6 +111,13 @@ foreach(APPLICATION_NAME ${APPLICATIONS_BUILD_LIST})
     endif()
 
     if (MSVC)
+      # MSBuild 的 RC 任务会继承 target 的全部 include 目录。worldserver PUBLIC 链接了 40+ 个静态
+      # 模块，闭包涨到 470+ 个路径（约 35 KB），超过 Windows 命令行 32767 字符上限，rc.exe 报
+      # MSB6003。.rc 里既有图标(ICON)也有版本号(VERSIONINFO)，两者都要保留，所以这里让 .rc 退出
+      # 常规编译，改由下面的 PRE_LINK 步骤用一个 include 目录极少的独立 rc.exe 调用生成 .res，
+      # 再把 .res 交给链接器。
+      set_source_files_properties(${SOURCE_APP_PATH}/${APPLICATION_NAME}.rc
+        PROPERTIES HEADER_FILE_ONLY TRUE)
       list(APPEND APP_PRIVATE_SOURCES ${SOURCE_APP_PATH}/${APPLICATION_NAME}.rc)
     endif()
   endif()
@@ -122,6 +129,13 @@ foreach(APPLICATION_NAME ${APPLICATIONS_BUILD_LIST})
     ${APP_PRIVATE_SOURCES})
 
   add_dependencies(${APP_PROJECT_NAME} revision.h)
+
+  if (MSVC AND WIN32)
+    # 单独编译 .rc（图标 + 版本号）：只带 app 目录、构建根目录（revision.h）与 SDK/CRT 头，
+    # 命令行长度与模块数量无关，彻底避开 MSB6003。
+    include(AcoreResources)
+    acore_compile_application_resources(${APP_PROJECT_NAME} ${APPLICATION_NAME} ${SOURCE_APP_PATH})
+  endif()
 
   target_link_libraries(${APP_PROJECT_NAME}
     PRIVATE

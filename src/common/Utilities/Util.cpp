@@ -522,6 +522,16 @@ void vutf8printf(FILE* out, char const* str, va_list* ap)
     std::size_t wtemp_len = 32 * 1024 - 1;
     Utf8toWStr(temp_buf, temp_len, wtemp_buf, wtemp_len);
 
+    // 控制台代码页是 UTF-8（chcp 65001 / Windows Terminal / 输出被重定向到文件）时，
+    // 直接写 UTF-8 字节；否则保持原来的 OEM 代码页转换（cmd 默认 936 时的行为）。
+    // 之前一律 CharToOemBuffW，在 65001 的终端里会把中文写成 GBK 字节 -> 乱码。
+    DWORD const consoleCP = GetConsoleOutputCP();
+    if (consoleCP == CP_UTF8 || consoleCP == 0)
+    {
+        fprintf(out, "%s", temp_buf);
+        return;
+    }
+
     CharToOemBuffW(&wtemp_buf[0], &temp_buf[0], uint32(wtemp_len + 1));
     fprintf(out, "%s", temp_buf);
 #else
