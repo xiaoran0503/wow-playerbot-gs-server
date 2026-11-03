@@ -1,0 +1,73 @@
+[worldserver]
+
+############################################################
+# mod-register 模块配置
+# GM 后台管理面板（Boost.Beast HTTP，本地执行）
+############################################################
+#
+
+#
+#    Register.Enable
+#        说明：是否启用 GM 后台 HTTP 服务。
+#        默认：0（关闭）
+#
+
+Register.Enable = 0
+
+
+#
+#    Register.Port
+#        说明：HTTP 服务监听端口。仅监听本机，勿做公网映射。
+#        默认：8090
+#
+
+Register.Port = 8090
+
+
+#
+#    Register.IP
+#        说明：监听地址。建议保持 127.0.0.1（仅本机访问）。
+#        默认：127.0.0.1
+#
+
+Register.IP = "127.0.0.1"
+
+
+#
+#    Register.AdminAccount
+#        说明：允许登录后台的游戏账号（用户名），多个用逗号分隔。
+#        账号需已授予 gmlevel >= 2（GM）。
+#        默认：空（不限制，任何 gmlevel>=2 的账号均可登录）
+#
+
+Register.AdminAccount = ""
+
+
+#
+#    Register.MinGmLevel
+#        说明：登录后台所需的最低账号权限等级（0-3）。
+#        默认：2（GM）
+#
+
+Register.MinGmLevel = 2
+
+
+#
+#    Register.SessionTimeout
+#        说明：后台会话过期时间（秒）。0 表示不启用会话缓存。
+#        默认：3600
+#
+
+Register.SessionTimeout = 3600
+
+
+#
+#    Register.ItemLocale
+#        说明：物品名称显示语言。取值：enUS/koKR/frFR/deDE/zhCN/zhTW/esES/esMX/ruRU
+#              中文客户端请用 zhCN；填 enUS 则显示英文原名。
+#              名称取自 item_template_locale 表，缺失时自动回退英文。
+#        默认：zhCN
+#
+
+Register.ItemLocale = "zhCN"
+

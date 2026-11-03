@@ -27,8 +27,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE IF NOT EXISTS `auctionhousebot_professionItems` (
-  `Entry` int NOT NULL,
-  `Item` int NOT NULL
+  `Entry` int NOT NULL AUTO_INCREMENT,
+  `Item` int NOT NULL,
+  PRIMARY KEY (`Entry`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -3702,19 +3703,9 @@ INSERT IGNORE INTO `auctionhousebot_professionItems` (`Entry`, `Item`) VALUES
 --
 
 --
--- Indexes for table `auctionhousebot_professionItems`
---
-
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
 -- AUTO_INCREMENT for table `auctionhousebot_professionItems`
 --
-ALTER TABLE `auctionhousebot_professionItems`
-  MODIFY `Entry` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3661;
+ALTER TABLE `auctionhousebot_professionItems` AUTO_INCREMENT=3661;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
